@@ -15,10 +15,10 @@ pip install transformers
 
 * Use
 
-** Simple
+** Simple generation with surprisal
 Generate four additional tokens and calculate surprisal for each token:
 #+BEGIN_SRC sh
-python3 gpt2.py "The key to the cabinets" -n 4
+python3 gpt2_generate.py "The key to the cabinets" -n 4
 #+END_SRC
 
 The output is shown in the shell and has ~.csv~ format which can be easily loaded in R, Excel, Google Sheets, and similar:
@@ -53,10 +53,10 @@ In Table format:
 To store the results into a file:
 
 #+BEGIN_SRC sh
-python3 gpt2.py "The key to the cabinets" -n 4 -o output.csv
+python3 gpt2_generate.py "The key to the cabinets" -n 4 -o output.csv
 #+END_SRC
 
-** Batch mode
+** Batch mode generation with surprisal
 To process multiple items in batch mode, create a ~.csv~ file following this example:
 
 #+BEGIN_EXAMPLE
@@ -76,7 +76,7 @@ Columns:
 
 Then run:
 #+BEGIN_SRC sh
-python3 gpt2.py -i input.csv -o output.csv
+python3 gpt2_generate.py -i input.csv -o output.csv
 #+END_SRC
 
 Result:
