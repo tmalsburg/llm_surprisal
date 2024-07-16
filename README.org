@@ -5,7 +5,15 @@ There are currently two tools:
 1. ~gpt2_generate.py~: Given a text, generate the next N tokens.  Annotate all words with their surprisal.
 2. ~gpt2_topn.py~: Given a text, list the N most highly ranked next tokens with their surprisal.
 
-Both tools have a batch mode that processes multiple items prepared in a ~.csv~ file.
+*Key features:*
+- Assumes basic familiarity with the use of a command line, but no programming needed.
+- Runs GPT2 locally without the need for an API key or internet connection.
+- Reasonably fast on CPU.
+- Batch mode that processes multiple items in one go.
+- Input and output format is ~.csv~ for easy pre- and post-processing
+  using R, Python, spreadsheet editors, whatnot.
+
+Developed and tested on Ubuntu Linux, but it may work out of the box on Mac OS and Windows.
 
 * Install
 
