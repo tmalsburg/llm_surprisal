@@ -1,5 +1,11 @@
 
-A really simple tool for generating tokens with GPT2 and/or calculate per-token surprisal.  Primarily intended for use in education.
+Really simple command-line tools for generating tokens with GPT2 and/or calculate per-token surprisal.  Primarily intended for use in education.  Designed to be easy to use.
+
+There are currently two tools:
+1. ~gpt2_generate.py~: Given a text, generate the next N tokens.  Annotate all words with their surprisal.
+2. ~gpt2_topn.py~: Given a text, list the N most highly ranked next tokens with their surprisal.
+
+Both tools have a batch mode that processes multiple items prepared in a ~.csv~ file.
 
 * Install
 
@@ -15,7 +21,8 @@ pip install transformers
 
 * Use
 
-** Simple generation with surprisal
+** Generation with surprisal
+*** Simple generation
 Generate four additional tokens and calculate surprisal for each token:
 #+BEGIN_SRC sh
 python3 gpt2_generate.py "The key to the cabinets" -n 4
@@ -56,7 +63,7 @@ To store the results into a file:
 python3 gpt2_generate.py "The key to the cabinets" -n 4 -o output.csv
 #+END_SRC
 
-** Batch mode generation with surprisal
+*** Batch mode generation
 To process multiple items in batch mode, create a ~.csv~ file following this example:
 
 #+BEGIN_EXAMPLE
@@ -158,3 +165,72 @@ Result:
 |    6 | 17 | Great     |   0.06291275471448898 |
 |    6 | 18 | Again     |   0.01570785976946354 |
 |    6 | 19 | """"      |   0.08896449953317642 |
+
+** Top N next tokens with surprisal
+*** Simple top N
+Top 5 next tokens:
+#+BEGIN_SRC sh
+python3 gpt2_topn.py "The key to the cabinets" -n 5
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+item,s,w,rank,surprisal
+1,The key to the cabinets,is,0,1.5308
+1,The key to the cabinets,are,1,4.1003
+1,The key to the cabinets,",",2,4.1612
+1,The key to the cabinets,was,3,4.2062
+1,The key to the cabinets,and,4,4.4588
+#+END_EXAMPLE
+
+| item | s                       | w   | rank | surprisal |
+|------+-------------------------+-----+------+-----------|
+|    1 | The key to the cabinets | is  |    1 |    1.5308 |
+|    1 | The key to the cabinets | are |    2 |    4.1003 |
+|    1 | The key to the cabinets | ,   |    3 |    4.1612 |
+|    1 | The key to the cabinets | was |    4 |    4.2062 |
+|    1 | The key to the cabinets | and |    5 |    4.4588 |
+
+*** Batch mode top N
+To process multiple items in batch mode, create a ~.csv~ file following this example:
+
+#+BEGIN_EXAMPLE
+item,text,n
+1,The key to the cabinets,10
+2,The first thing the new president will do is to introduce,10
+#+END_EXAMPLE
+
+Columns:
+1. Item number
+2. Text
+3. Number of top tokens that should be reported
+
+Then run:
+#+BEGIN_SRC sh
+python3 gpt2_topn.py -i input.csv -o output.csv
+#+END_SRC
+
+Result:
+
+| item | s                                                         | w           | rank |          surprisal |
+|------+-----------------------------------------------------------+-------------+------+--------------------|
+|    1 | The key to the cabinets                                   | is          |    1 |  1.530847191810608 |
+|    1 | The key to the cabinets                                   | are         |    2 |  4.100262641906738 |
+|    1 | The key to the cabinets                                   | ,           |    33 | 4.1611528396606445 |
+|    1 | The key to the cabinets                                   | was         |    4 |  4.206236839294434 |
+|    1 | The key to the cabinets                                   | and         |    5 |  4.458767890930176 |
+|    1 | The key to the cabinets                                   | in          |    6 |  4.966185569763184 |
+|    1 | The key to the cabinets                                   | of          |    7 |  5.340408802032471 |
+|    1 | The key to the cabinets                                   | '           |    8 |  5.369940280914307 |
+|    1 | The key to the cabinets                                   | being       |    9 |  5.823633193969727 |
+|    1 | The key to the cabinets                                   | that        |   10 |  6.032191753387451 |
+|    2 | The first thing the new president will do is to introduce | a           |    1 |  1.717236042022705 |
+|    2 | The first thing the new president will do is to introduce | legislation |    2 | 3.0158398151397705 |
+|    2 | The first thing the new president will do is to introduce | the         |    3 |  3.788292407989502 |
+|    2 | The first thing the new president will do is to introduce | his         |    4 |  4.383864402770996 |
+|    2 | The first thing the new president will do is to introduce | an          |    5 |  4.400935649871826 |
+|    2 | The first thing the new president will do is to introduce | new         |    6 |  4.592444896697998 |
+|    2 | The first thing the new president will do is to introduce | some        |    7 |  5.393261909484863 |
+|    2 | The first thing the new president will do is to introduce | himself     |    8 |  6.188421726226807 |
+|    2 | The first thing the new president will do is to introduce | more        |    9 |  7.121828079223633 |
+|    2 | The first thing the new president will do is to introduce | and         |   10 |  7.167385578155518 |
+
