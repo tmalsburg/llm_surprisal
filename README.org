@@ -1,0 +1,160 @@
+
+A really simple tool for generating tokens with GPT2 and/or calculate per-token surprisal.  Primarily intended for use in education.
+
+* Install
+
+** Prerequisites
+It is assumed that the system has a recent version of Python3.
+
+Then install PyTorch and Huggingface’s ~transformer~ package:
+
+#+BEGIN_SRC sh
+pip install pytorch
+pip install transformers
+#+END_SRC
+
+* Use
+
+** Simple
+Generate four additional tokens and calculate surprisal for each token:
+#+BEGIN_SRC sh
+python3 gpt2.py "The key to the cabinets" -n 4
+#+END_SRC
+
+The output is shown in the shell and has ~.csv~ format which can be easily loaded in R, Excel, Google Sheets, and similar:
+
+#+BEGIN_EXAMPLE
+item,wn,w,surprisal
+1,1,The,nan
+1,2,key,10.35491943359375
+1,3,to,2.019094467163086
+1,4,the,3.7583045959472656
+1,5,cabinets,21.04239845275879
+1,6,is,1.5308449268341064
+1,7,to,2.274099111557007
+1,8,remember,8.212972640991211
+1,9,your,5.9052910804748535
+#+END_EXAMPLE
+
+In Table format:
+
+| item | wn | w        |          surprisal |
+|------+----+----------+--------------------|
+|    1 |  1 | The      |                nan |
+|    1 |  2 | key      |  10.35491943359375 |
+|    1 |  3 | to       |  2.019094467163086 |
+|    1 |  4 | the      | 3.7583045959472656 |
+|    1 |  5 | cabinets |  21.04239845275879 |
+|    1 |  6 | is       | 1.5308449268341064 |
+|    1 |  7 | to       |  2.274099111557007 |
+|    1 |  8 | remember |  8.212972640991211 |
+|    1 |  9 | your     | 5.9052910804748535 |
+
+To store the results into a file:
+
+#+BEGIN_SRC sh
+python3 gpt2.py "The key to the cabinets" -n 4 -o output.csv
+#+END_SRC
+
+** Batch mode
+To process multiple items in batch mode, create a ~.csv~ file following this example:
+
+#+BEGIN_EXAMPLE
+item,text,n
+1,John saw the man who the card catalog had confused a great deal.,0
+2,No head injury is too trivial to be ignored.,0
+3,The key to the cabinets were on the table.,0
+4,How many animals of each kind did Moses take on the ark?,0
+5,The horse raced past the barn fell.,0
+6,The first thing the new president will do is,10
+#+END_EXAMPLE
+
+Columns:
+1. Item number
+2. Text
+3. Number of additional tokens that should be generated
+
+Then run:
+#+BEGIN_SRC sh
+python3 gpt2.py -i input.csv -o output.csv
+#+END_SRC
+
+Result:
+
+| item | wn | w         |             surprisal |
+|------+----+-----------+-----------------------|
+|    1 |  1 | John      |                   nan |
+|    1 |  2 | saw       |    12.686095237731934 |
+|    1 |  3 | the       |    2.5510218143463135 |
+|    1 |  4 | man       |      6.69647216796875 |
+|    1 |  5 | who       |    4.4374775886535645 |
+|    1 |  6 | the       |     9.218789100646973 |
+|    1 |  7 | card      |     12.91416072845459 |
+|    1 |  8 | catalog   |    13.132523536682129 |
+|    1 |  9 | had       |     5.045916557312012 |
+|    1 | 10 | confused  |    12.417732238769531 |
+|    1 | 11 | a         |     8.445308685302734 |
+|    1 | 12 | great     |     8.923978805541992 |
+|    1 | 13 | deal      |    0.5196788311004639 |
+|    1 | 14 | .         |     2.855055093765259 |
+|    2 |  1 | No        |                   nan |
+|    2 |  2 | head      |    12.043790817260742 |
+|    2 |  3 | injury    |     7.169843673706055 |
+|    2 |  4 | is        |     3.976238965988159 |
+|    2 |  5 | too       |      6.11444616317749 |
+|    2 |  6 | trivial   |     10.36826229095459 |
+|    2 |  7 | to        |    1.1925396919250488 |
+|    2 |  8 | be        |    3.6252267360687256 |
+|    2 |  9 | ignored   |     5.360403060913086 |
+|    2 | 10 | .         |    1.3230934143066406 |
+|    3 |  1 | The       |                   nan |
+|    3 |  2 | key       |     10.35491943359375 |
+|    3 |  3 | to        |     2.019094467163086 |
+|    3 |  4 | the       |    3.7583045959472656 |
+|    3 |  5 | cabinets  |     21.04239845275879 |
+|    3 |  6 | were      |     6.044715404510498 |
+|    3 |  7 | on        |     9.186738967895508 |
+|    3 |  8 | the       |    1.0266693830490112 |
+|    3 |  9 | table     |     6.743055820465088 |
+|    3 | 10 | .         |    2.8487112522125244 |
+|    4 |  1 | How       |                   nan |
+|    4 |  2 | many      |     8.747537612915039 |
+|    4 |  3 | animals   |    10.349991798400879 |
+|    4 |  4 | of        |     7.982310771942139 |
+|    4 |  5 | each      |     7.254271984100342 |
+|    4 |  6 | kind      |    3.8629841804504395 |
+|    4 |  7 | did       |     6.853036880493164 |
+|    4 |  8 | Moses     |    11.290939331054688 |
+|    4 |  9 | take      |     6.513387680053711 |
+|    4 | 10 | on        |     5.387193202972412 |
+|    4 | 11 | the       |     2.429086208343506 |
+|    4 | 12 | ar        |      8.29068660736084 |
+|    4 | 13 | k         |  0.001733059762045741 |
+|    4 | 14 | ?         |    1.3717999458312988 |
+|    5 |  1 | The       |                   nan |
+|    5 |  2 | horse     |    13.856287002563477 |
+|    5 |  3 | raced     |    10.928426742553711 |
+|    5 |  4 | past      |     5.529265880584717 |
+|    5 |  5 | the       |     1.912912130355835 |
+|    5 |  6 | barn      |     6.164068222045898 |
+|    5 |  7 | fell      |    18.577974319458008 |
+|    5 |  8 | .         |    6.4461774826049805 |
+|    6 |  1 | The       |                   nan |
+|    6 |  2 | first     |     7.707244873046875 |
+|    6 |  3 | thing     |     3.870574712753296 |
+|    6 |  4 | the       |     5.894345760345459 |
+|    6 |  5 | new       |     7.025041580200195 |
+|    6 |  6 | president |    6.4177327156066895 |
+|    6 |  7 | will      |     4.513916492462158 |
+|    6 |  8 | do        |     0.641898512840271 |
+|    6 |  9 | is        |    0.6119055151939392 |
+|    6 | 10 | introduce |     6.937398910522461 |
+|    6 | 11 | some      |     5.374466896057129 |
+|    6 | 12 | sort      |    5.1832194328308105 |
+|    6 | 13 | of        | 0.0006344764260575175 |
+|    6 | 14 | """"      |     5.472208499908447 |
+|    6 | 15 | Make      |     6.435114860534668 |
+|    6 | 16 | America   |   0.20164340734481812 |
+|    6 | 17 | Great     |   0.06291275471448898 |
+|    6 | 18 | Again     |   0.01570785976946354 |
+|    6 | 19 | """"      |   0.08896449953317642 |
