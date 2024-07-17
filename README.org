@@ -183,11 +183,11 @@ python3 gpt2_topn.py "The key to the cabinets" -n 5
 
 #+BEGIN_EXAMPLE
 item,s,w,rank,surprisal
-1,The key to the cabinets,is,0,1.5308
-1,The key to the cabinets,are,1,4.1003
-1,The key to the cabinets,",",2,4.1612
-1,The key to the cabinets,was,3,4.2062
-1,The key to the cabinets,and,4,4.4588
+1,The key to the cabinets,is,1,1.5308
+1,The key to the cabinets,are,2,4.1003
+1,The key to the cabinets,",",3,4.1612
+1,The key to the cabinets,was,4,4.2062
+1,The key to the cabinets,and,5,4.4588
 #+END_EXAMPLE
 
 | item | s                       | w   | rank | surprisal |
@@ -223,7 +223,7 @@ Result:
 |------+-----------------------------------------------------------+-------------+------+--------------------|
 |    1 | The key to the cabinets                                   | is          |    1 |  1.530847191810608 |
 |    1 | The key to the cabinets                                   | are         |    2 |  4.100262641906738 |
-|    1 | The key to the cabinets                                   | ,           |    33 | 4.1611528396606445 |
+|    1 | The key to the cabinets                                   | ,           |    3 | 4.1611528396606445 |
 |    1 | The key to the cabinets                                   | was         |    4 |  4.206236839294434 |
 |    1 | The key to the cabinets                                   | and         |    5 |  4.458767890930176 |
 |    1 | The key to the cabinets                                   | in          |    6 |  4.966185569763184 |
