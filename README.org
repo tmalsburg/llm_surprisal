@@ -22,7 +22,7 @@ It is assumed that the system has a recent version of Python3.
 
 Then install PyTorch and Huggingface’s ~transformer~ package:
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :eval no
 pip install pytorch
 pip install transformers
 #+END_SRC
@@ -30,10 +30,15 @@ pip install transformers
 * Use
 
 ** Generation with surprisal
+
 *** Simple generation of tokens
 Command to generate four additional tokens and calculate surprisal for each token.
-#+BEGIN_SRC sh :results output
+#+BEGIN_SRC sh :exports code :eval no
 python3 gpt2_generate.py "The key to the cabinets" -n 4
+#+END_SRC
+
+#+BEGIN_SRC sh :exports results :results output
+python3 gpt2_generate.py "The key to the cabinets" -n 4 -s 2
 #+END_SRC
 
 #+RESULTS:
@@ -44,18 +49,18 @@ item,wn,w,surprisal
 1,3,to,2.019094467163086
 1,4,the,3.7583045959472656
 1,5,cabinets,21.04239845275879
-1,6,of,5.34040641784668
-1,7,the,2.0152313709259033
-1,8,U,7.394680976867676
-1,9,.,0.2743556797504425
+1,6,is,1.5308449268341064
+1,7,that,3.2748565673828125
+1,8,the,2.5106589794158936
+1,9,doors,7.590230464935303
 #+end_example
 
 The output has ~.csv~ format which can be easily loaded in R, Excel, Google Sheets, and similar.  By default it is shown in the shell.
 
-In Table format:
+In table format:
 
 #+BEGIN_SRC sh :exports results
-python3 gpt2_generate.py "The key to the cabinets" -n 4
+python3 gpt2_generate.py "The key to the cabinets" -n 4 -s 2
 #+END_SRC
 
 #+RESULTS:
@@ -66,14 +71,20 @@ python3 gpt2_generate.py "The key to the cabinets" -n 4
 |    1 |  4 | the      | 3.7583045959472656 |
 |    1 |  5 | cabinets |  21.04239845275879 |
 |    1 |  6 | is       | 1.5308449268341064 |
-|    1 |  7 | to       |  2.274099111557007 |
-|    1 |  8 | move     |   7.28870153427124 |
-|    1 |  9 | through  |  7.630617618560791 |
+|    1 |  7 | that     | 3.2748565673828125 |
+|    1 |  8 | the      | 2.5106589794158936 |
+|    1 |  9 | doors    |  7.590230464935303 |
 
 To store the results into a file:
 
 #+BEGIN_SRC sh :eval no
 python3 gpt2_generate.py "The key to the cabinets" -n 4 -o output.csv
+#+END_SRC
+
+*** Reproducible generation
+To obtain reproducible (i.e. non-random) results, the ~-s~ option can be used to set a random seed:
+#+BEGIN_SRC sh :eval no
+python3 gpt2_generate.py "The key to the cabinets" -n 4 -s 1
 #+END_SRC
 
 *** Batch mode generation
@@ -95,8 +106,12 @@ Columns:
 3. Number of additional tokens that should be generated
 
 Then run:
-#+BEGIN_SRC sh :exports code
+#+BEGIN_SRC sh :exports code :eval no
 python3 gpt2_generate.py -i input_generate.csv -o output_generate.csv
+#+END_SRC
+
+#+BEGIN_SRC sh :exports none
+python3 gpt2_generate.py -i input_generate.csv -o output_generate.csv -s 1
 #+END_SRC
 
 Result:
@@ -186,26 +201,30 @@ cat output_generate.csv
 ** Top N next tokens with surprisal
 *** Simple top N
 Top 5 next tokens:
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :results output verbatim
 python3 gpt2_topn.py "The key to the cabinets" -n 5
 #+END_SRC
 
-#+BEGIN_EXAMPLE
-item,s,w,rank,surprisal
-1,The key to the cabinets,is,1,1.5308
-1,The key to the cabinets,are,2,4.1003
-1,The key to the cabinets,",",3,4.1612
-1,The key to the cabinets,was,4,4.2062
-1,The key to the cabinets,and,5,4.4588
-#+END_EXAMPLE
+#+RESULTS:
+: item,s,w,rank,surprisal
+: 1,The key to the cabinets,is,1,1.530847191810608
+: 1,The key to the cabinets,are,2,4.100262641906738
+: 1,The key to the cabinets,",",3,4.1611528396606445
+: 1,The key to the cabinets,was,4,4.206236839294434
+: 1,The key to the cabinets,and,5,4.458767890930176
 
-| item | s                       | w   | rank | surprisal |
-|------+-------------------------+-----+------+-----------|
-|    1 | The key to the cabinets | is  |    1 |    1.5308 |
-|    1 | The key to the cabinets | are |    2 |    4.1003 |
-|    1 | The key to the cabinets | ,   |    3 |    4.1612 |
-|    1 | The key to the cabinets | was |    4 |    4.2062 |
-|    1 | The key to the cabinets | and |    5 |    4.4588 |
+In table format:
+#+BEGIN_SRC sh :exports results :results output table
+python3 gpt2_topn.py "The key to the cabinets" -n 5
+#+END_SRC
+
+#+RESULTS:
+| item | s                       | w   | rank |          surprisal |
+|    1 | The key to the cabinets | is  |    1 |  1.530847191810608 |
+|    1 | The key to the cabinets | are |    2 |  4.100262641906738 |
+|    1 | The key to the cabinets | ,   |    3 | 4.1611528396606445 |
+|    1 | The key to the cabinets | was |    4 |  4.206236839294434 |
+|    1 | The key to the cabinets | and |    5 |  4.458767890930176 |
 
 *** Batch mode top N
 To process multiple items in batch mode, create a ~.csv~ file following this example:
@@ -222,32 +241,55 @@ Columns:
 3. Number of top tokens that should be reported
 
 Then run:
-#+BEGIN_SRC sh
-python3 gpt2_topn.py -i input.csv -o output.csv
+#+BEGIN_SRC sh :exports code
+python3 gpt2_topn.py -i input_topn.csv -o output_topn.csv
 #+END_SRC
 
 Result:
+#+BEGIN_SRC sh :exports results
+cat output_topn.csv
+#+END_SRC
 
-| item | s                                                         | w           | rank |          surprisal |
-|------+-----------------------------------------------------------+-------------+------+--------------------|
-|    1 | The key to the cabinets                                   | is          |    1 |  1.530847191810608 |
-|    1 | The key to the cabinets                                   | are         |    2 |  4.100262641906738 |
-|    1 | The key to the cabinets                                   | ,           |    3 | 4.1611528396606445 |
-|    1 | The key to the cabinets                                   | was         |    4 |  4.206236839294434 |
-|    1 | The key to the cabinets                                   | and         |    5 |  4.458767890930176 |
-|    1 | The key to the cabinets                                   | in          |    6 |  4.966185569763184 |
-|    1 | The key to the cabinets                                   | of          |    7 |  5.340408802032471 |
-|    1 | The key to the cabinets                                   | '           |    8 |  5.369940280914307 |
-|    1 | The key to the cabinets                                   | being       |    9 |  5.823633193969727 |
-|    1 | The key to the cabinets                                   | that        |   10 |  6.032191753387451 |
-|    2 | The first thing the new president will do is to introduce | a           |    1 |  1.717236042022705 |
-|    2 | The first thing the new president will do is to introduce | legislation |    2 | 3.0158398151397705 |
-|    2 | The first thing the new president will do is to introduce | the         |    3 |  3.788292407989502 |
-|    2 | The first thing the new president will do is to introduce | his         |    4 |  4.383864402770996 |
-|    2 | The first thing the new president will do is to introduce | an          |    5 |  4.400935649871826 |
-|    2 | The first thing the new president will do is to introduce | new         |    6 |  4.592444896697998 |
-|    2 | The first thing the new president will do is to introduce | some        |    7 |  5.393261909484863 |
-|    2 | The first thing the new president will do is to introduce | himself     |    8 |  6.188421726226807 |
-|    2 | The first thing the new president will do is to introduce | more        |    9 |  7.121828079223633 |
-|    2 | The first thing the new president will do is to introduce | and         |   10 |  7.167385578155518 |
+#+RESULTS:
+| item | s                                                               | w           | rank |          surprisal |
+|    1 | The key to the cabinets                                         | is          |    1 |  1.530847191810608 |
+|    1 | The key to the cabinets                                         | are         |    2 |  4.100262641906738 |
+|    1 | The key to the cabinets                                         | ,           |    3 | 4.1611528396606445 |
+|    1 | The key to the cabinets                                         | was         |    4 |  4.206236839294434 |
+|    1 | The key to the cabinets                                         | and         |    5 |  4.458767890930176 |
+|    1 | The key to the cabinets                                         | in          |    6 |  4.966185569763184 |
+|    1 | The key to the cabinets                                         | of          |    7 |  5.340408802032471 |
+|    1 | The key to the cabinets                                         | '           |    8 |  5.369940280914307 |
+|    1 | The key to the cabinets                                         | being       |    9 |  5.823633193969727 |
+|    1 | The key to the cabinets                                         | that        |   10 |  6.032191753387451 |
+|    2 | The key to the cabinet                                          | 's          |    1 | 1.8515361547470093 |
+|    2 | The key to the cabinet                                          | is          |    2 | 2.9451916217803955 |
+|    2 | The key to the cabinet                                          | ,           |    3 |  4.270960807800293 |
+|    2 | The key to the cabinet                                          | was         |    4 |  4.756969928741455 |
+|    2 | The key to the cabinet                                          | meeting     |    5 |  5.037260055541992 |
+|    2 | The key to the cabinet                                          | being       |    6 | 5.4005866050720215 |
+|    2 | The key to the cabinet                                          | resh        |    7 |  6.193490028381348 |
+|    2 | The key to the cabinet                                          | has         |    8 |  6.257472991943359 |
+|    2 | The key to the cabinet                                          | and         |    9 |  6.363502502441406 |
+|    2 | The key to the cabinet                                          | of          |   10 |  6.371416091918945 |
+|    3 | The first thing the new president will do is to introduce       | a           |    1 |  1.717236042022705 |
+|    3 | The first thing the new president will do is to introduce       | legislation |    2 | 3.0158398151397705 |
+|    3 | The first thing the new president will do is to introduce       | the         |    3 |  3.788292407989502 |
+|    3 | The first thing the new president will do is to introduce       | his         |    4 |  4.383864402770996 |
+|    3 | The first thing the new president will do is to introduce       | an          |    5 |  4.400935649871826 |
+|    3 | The first thing the new president will do is to introduce       | new         |    6 |  4.592444896697998 |
+|    3 | The first thing the new president will do is to introduce       | some        |    7 |  5.393261909484863 |
+|    3 | The first thing the new president will do is to introduce       | himself     |    8 |  6.188421726226807 |
+|    3 | The first thing the new president will do is to introduce       | more        |    9 |  7.121828079223633 |
+|    3 | The first thing the new president will do is to introduce       | and         |   10 |  7.167385578155518 |
+|    4 | After moving into the Oval Office, one of the first things that | came        |    1 |   4.16267204284668 |
+|    4 | After moving into the Oval Office, one of the first things that | I           |    2 | 4.3133015632629395 |
+|    4 | After moving into the Oval Office, one of the first things that | Trump       |    3 |   4.36268949508667 |
+|    4 | After moving into the Oval Office, one of the first things that | President   |    4 |  4.635979652404785 |
+|    4 | After moving into the Oval Office, one of the first things that | he          |    5 |  4.925130367279053 |
+|    4 | After moving into the Oval Office, one of the first things that | the         |    6 |  5.133755207061768 |
+|    4 | After moving into the Oval Office, one of the first things that | was         |    7 |  5.245244026184082 |
+|    4 | After moving into the Oval Office, one of the first things that | happened    |    8 |  5.386913299560547 |
+|    4 | After moving into the Oval Office, one of the first things that | Obama       |    9 |  6.018731117248535 |
+|    4 | After moving into the Oval Office, one of the first things that | Mr          |   10 | 6.0303544998168945 |
 

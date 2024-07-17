@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser(description='Use GPT2 to generate tokens and ca
 
 parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
 parser.add_argument('-n', '--number', type=int, default=10, help='An optional number')
+parser.add_argument('-s', '--seed', type=int, default=None, help='Seed for used for sampling (to force reproducible results)')
 parser.add_argument('-i', '--input', type=argparse.FileType('r', encoding='utf-8'), help='The path to the file from which the input should be read.')
 parser.add_argument('-o', '--output', type=argparse.FileType('w', encoding='utf-8'), default=io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8'), help='The path to the file to which the results should be written (default is stdout).')
 args = parser.parse_args()
@@ -22,11 +23,20 @@ args = parser.parse_args()
 #
 
 import csv, torch
+import numpy as np
+import random
 from transformers import AutoTokenizer, GPT2LMHeadModel
 import torch.nn.functional as F
 
 tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2")
 model     = GPT2LMHeadModel.from_pretrained("openai-community/gpt2")
+
+def set_seed(seed):
+  random.seed(seed)
+  np.random.seed(seed)
+  torch.manual_seed(seed)
+  # if torch.cuda.is_available():
+  #   torch.cuda.manual_seed_all(seed)
 
 #
 # Read input text:
@@ -56,6 +66,9 @@ def generate(input_text, nt):
   output_tokens = model.generate(**input_tokens, max_length=nt, temperature=1.0, do_sample=True)
   output_text = tokenizer.batch_decode(output_tokens)[0]
   return output_text
+
+if args.seed:
+  set_seed(args.seed)
 
 for item in items:
   if item['n'] > 0:
