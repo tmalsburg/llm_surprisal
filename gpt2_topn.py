@@ -66,7 +66,11 @@ for item in items:
 # Write results to file:
 #
 
-csvwriter = csv.writer(args.output)
+class UnixDialect(csv.excel):
+  lineterminator = '\n'
+csv.register_dialect("unix_excel", UnixDialect)
+
+csvwriter = csv.writer(args.output, dialect="unix_excel")
 csvwriter.writerow(["item", "s", "w", "rank", "surprisal"])
 for item in items:
   for rank,(token, surprisal) in enumerate(item['topn']):
