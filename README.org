@@ -19,13 +19,13 @@ Developed and tested on Ubuntu Linux, but it may work out of the box on Mac OS
 * Install
 
 ** Prerequisites
-It is assumed that the system has a recent version of Python3.
+It is assumed that the system has a recent version of Python3 and the pip package manager for Python.  On Ubuntu Linux, these can be installed via ~sudo apt install python3-pip~.
 
 Then install PyTorch and Huggingface’s ~transformer~ package:
 
 #+BEGIN_SRC sh :eval no
-pip install pytorch
-pip install transformers
+pip3 install torch
+pip3 install transformers
 #+END_SRC
 
 * Use
