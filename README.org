@@ -1,14 +1,15 @@
 
-Really simple command-line tools for generating tokens with GPT2 and/or calculate per-token surprisal.  Primarily intended for use in education.  Designed to be easy to use.
+Simple command-line tools for low-barrier reproducible experiments with GPT2.  Primarily intended for use in education.  Designed to be easy to use for non-technical users.
 
 There are currently two tools:
 1. ~gpt2_generate.py~: Given a text, generate the next N tokens.  Annotate all words with their surprisal.
 2. ~gpt2_topn.py~: Given a text, list the N most highly ranked next tokens with their surprisal.
 
 *Key features:*
-- Assumes basic familiarity with the use of a command line, but no programming needed.
-- Runs GPT2 locally without the need for an API key or internet connection.
+- Assumes basic familiarity with the use of a command line, but no is programming needed.
+- Runs open source GPT2 locally without the need for an API key or internet connection.
 - Reasonably fast on CPU.
+- Reproducible results via random seeds.
 - Batch mode that processes multiple items in one go.
 - Input and output format is ~.csv~ for easy pre- and post-processing
   using R, Python, spreadsheet editors, whatnot.
