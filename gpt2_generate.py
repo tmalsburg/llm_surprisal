@@ -99,7 +99,11 @@ for item in items:
 # Write results to file:
 #
 
-csvwriter = csv.writer(args.output)
+class UnixDialect(csv.excel):
+  lineterminator = '\n'
+csv.register_dialect("unix_excel", UnixDialect)
+
+csvwriter = csv.writer(args.output, dialect="unix_excel")
 csvwriter.writerow(["item", "wn", "w", "surprisal"])
 for item in items:
   for wn,(token, surprisal) in enumerate(item['surprisals']):
