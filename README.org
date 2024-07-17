@@ -30,31 +30,36 @@ pip install transformers
 * Use
 
 ** Generation with surprisal
-*** Simple generation
-Generate four additional tokens and calculate surprisal for each token:
-#+BEGIN_SRC sh
+*** Simple generation of tokens
+Command to generate four additional tokens and calculate surprisal for each token.
+#+BEGIN_SRC sh :results output
 python3 gpt2_generate.py "The key to the cabinets" -n 4
 #+END_SRC
 
-The output is shown in the shell and has ~.csv~ format which can be easily loaded in R, Excel, Google Sheets, and similar:
-
-#+BEGIN_EXAMPLE
+#+RESULTS:
+#+begin_example
 item,wn,w,surprisal
 1,1,The,nan
 1,2,key,10.35491943359375
 1,3,to,2.019094467163086
 1,4,the,3.7583045959472656
 1,5,cabinets,21.04239845275879
-1,6,is,1.5308449268341064
-1,7,to,2.274099111557007
-1,8,remember,8.212972640991211
-1,9,your,5.9052910804748535
-#+END_EXAMPLE
+1,6,of,5.34040641784668
+1,7,the,2.0152313709259033
+1,8,U,7.394680976867676
+1,9,.,0.2743556797504425
+#+end_example
+
+The output has ~.csv~ format which can be easily loaded in R, Excel, Google Sheets, and similar.  By default it is shown in the shell.
 
 In Table format:
 
+#+BEGIN_SRC sh :exports results
+python3 gpt2_generate.py "The key to the cabinets" -n 4
+#+END_SRC
+
+#+RESULTS:
 | item | wn | w        |          surprisal |
-|------+----+----------+--------------------|
 |    1 |  1 | The      |                nan |
 |    1 |  2 | key      |  10.35491943359375 |
 |    1 |  3 | to       |  2.019094467163086 |
@@ -62,12 +67,12 @@ In Table format:
 |    1 |  5 | cabinets |  21.04239845275879 |
 |    1 |  6 | is       | 1.5308449268341064 |
 |    1 |  7 | to       |  2.274099111557007 |
-|    1 |  8 | remember |  8.212972640991211 |
-|    1 |  9 | your     | 5.9052910804748535 |
+|    1 |  8 | move     |   7.28870153427124 |
+|    1 |  9 | through  |  7.630617618560791 |
 
 To store the results into a file:
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :eval no
 python3 gpt2_generate.py "The key to the cabinets" -n 4 -o output.csv
 #+END_SRC
 
@@ -90,11 +95,15 @@ Columns:
 3. Number of additional tokens that should be generated
 
 Then run:
-#+BEGIN_SRC sh
-python3 gpt2_generate.py -i input.csv -o output.csv
+#+BEGIN_SRC sh :exports code
+python3 gpt2_generate.py -i input_generate.csv -o output_generate.csv
 #+END_SRC
 
 Result:
+
+#+BEGIN_SRC sh :exports results
+cat output_generate.csv
+#+END_SRC
 
 | item | wn | w         |             surprisal |
 |------+----+-----------+-----------------------|
