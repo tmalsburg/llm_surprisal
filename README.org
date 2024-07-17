@@ -75,8 +75,7 @@ python3 gpt2_generate.py "The key to the cabinets" -n 4 -s 2
 |    1 |  8 | the      | 2.5106589794158936 |
 |    1 |  9 | doors    |  7.590230464935303 |
 
-To store the results into a file:
-
+*** Store results in a file
 #+BEGIN_SRC sh :eval no
 python3 gpt2_generate.py "The key to the cabinets" -n 4 -o output.csv
 #+END_SRC
@@ -225,6 +224,11 @@ python3 gpt2_topn.py "The key to the cabinets" -n 5
 |    1 | The key to the cabinets | ,   |    3 | 4.1611528396606445 |
 |    1 | The key to the cabinets | was |    4 |  4.206236839294434 |
 |    1 | The key to the cabinets | and |    5 |  4.458767890930176 |
+
+*** Store results in a file
+#+BEGIN_SRC sh :eval no
+python3 gpt2_topn.py "The key to the cabinets" -n 5 -o output.csv
+#+END_SRC
 
 *** Batch mode top N
 To process multiple items in batch mode, create a ~.csv~ file following this example:
