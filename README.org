@@ -6,7 +6,7 @@ There are currently two tools:
 2. ~gpt2_topn.py~: Given a text, list the N most highly ranked next tokens with their surprisal.
 
 *Key features:*
-- Assumes basic familiarity with the use of a command line, but no is programming needed.
+- Assumes basic familiarity with the use of a command line, but no programming is needed.
 - Runs open source GPT2 locally without the need for an API key or internet connection.
 - Reasonably fast on CPU.
 - Reproducible results via random seeds.
