@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser(description='Use GPT2 to generate tokens and ca
 
 parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
 parser.add_argument('-n', '--number', type=int, default=10, help='An optional number')
+parser.add_argument('-t', '--tablelayout', action='store_true', help='Output in table layout with ASCII art bars')
 parser.add_argument('-s', '--seed', type=int, default=None, help='Seed for used for sampling (to force reproducible results)')
 parser.add_argument('-i', '--input', type=argparse.FileType('r', encoding='utf-8'), help='The path to the file from which the input should be read.')
 parser.add_argument('-o', '--output', type=argparse.FileType('w', encoding='utf-8'), default=io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8'), help='The path to the file to which the results should be written (default is stdout).')
@@ -22,9 +23,8 @@ args = parser.parse_args()
 # Load model:
 #
 
-import csv, torch
+import csv, torch, random, math
 import numpy as np
-import random
 from transformers import AutoTokenizer, GPT2LMHeadModel
 import torch.nn.functional as F
 
@@ -112,13 +112,51 @@ for item in items:
 # Write results to file:
 #
 
-class UnixDialect(csv.excel):
-  lineterminator = '\n'
-csv.register_dialect("unix_excel", UnixDialect)
+if args.tablelayout:
+  #
+  # Human readable layout with ASCII art bars for surprisal
+  #
+  item_max = len("item")
+  idx_max = len("idx")
+  token_max = len("token")
+  surprisal_max = len("surprisal (bits)")
+  for item in items:
+    for idx,(token, surprisal) in enumerate(item['surprisals']):
+      item_max      = max(item_max,      len(str(item['item'])))
+      idx_max       = max(idx_max,       len(str(idx+1)))
+      token_max     = max(token_max,     len(token.strip()))
+      if not math.isnan(surprisal):
+        surprisal_max = max(surprisal_max, surprisal)
 
-csvwriter = csv.writer(args.output, dialect="unix_excel")
-csvwriter.writerow(["item", "wn", "w", "surprisal"])
-for item in items:
-  for wn,(token, surprisal) in enumerate(item['surprisals']):
-    csvwriter.writerow([item['item'], wn+1, token.strip(), surprisal])
+  args.output.write(
+    "%s %s %s: %s\n" % (
+      "Item".rjust(item_max),
+      "Idx".rjust(idx_max),
+      "Token".rjust(token_max),
+      "Surprisal (bits)"))
+  for item in items:
+    for idx,(token, surprisal) in enumerate(item['surprisals']):
+      if math.isnan(surprisal):
+        sp = ""
+      else:
+        sp = round(surprisal) * "█"
+      args.output.write(
+        "%s %s %s: %s %s\n" % (
+          str(item['item']).rjust(item_max),
+          str(idx+1).rjust(idx_max),
+          token.strip().rjust(token_max),
+          sp.ljust(round(surprisal_max)),
+          ("%.1f" % (surprisal,)).rjust(5)))
+else:
+  #
+  # CSV output:
+  #
+  class UnixDialect(csv.excel):
+    lineterminator = '\n'
+  csv.register_dialect("unix_excel", UnixDialect)
+  csvwriter = csv.writer(args.output, dialect="unix_excel")
+  csvwriter.writerow(["item", "idx", "token", "surprisal"])
+  for item in items:
+    for idx,(token, surprisal) in enumerate(item['surprisals']):
+      csvwriter.writerow([item['item'], idx+1, token.strip(), surprisal])
 
