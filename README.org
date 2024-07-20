@@ -56,13 +56,8 @@ Item Idx    Token: Surprisal (bits)
    1   9    doors: ████████                7.6
 #+end_example
 
-*** Store results in a ~.csv~ file
-To obtain in ~.csv~ format which can be easily loaded in R, Excel, Google Sheets, and similar:
-#+BEGIN_SRC sh :eval no
-python3 gpt2_generate.py "The key to the cabinets" -n 4 -o output.csv
-#+END_SRC
-
-When no output file is specified (default output in the shell), CSV format can be forced with the ~-c~ option:
+*** Output in CSV format
+CSV format in shell output can be obtained with the ~-c~ option:
 
 #+BEGIN_SRC sh :exports code :eval no
 python3 gpt2_generate.py "The key to the cabinets" -n 4 -c
@@ -85,6 +80,14 @@ item,idx,token,surprisal
 1,8,the,2.5106589794158936
 1,9,doors,7.590230464935303
 #+end_example
+
+*** Store results in a ~.csv~ file
+To store results in a ~.csv~ file which can be easily loaded in R, Excel, Google Sheets, and similar:
+#+BEGIN_SRC sh :eval no
+python3 gpt2_generate.py "The key to the cabinets" -n 4 -o output.csv
+#+END_SRC
+
+When storing results to a file, there’s no need to specify ~-c~.  CSV will be used by default.
 
 *** Reproducible generation
 To obtain reproducible (i.e. non-random) results, the ~-s~ option can be used to set a random seed:
