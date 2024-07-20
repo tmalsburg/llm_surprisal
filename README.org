@@ -44,7 +44,37 @@ python3 gpt2_generate.py "The key to the cabinets" -n 4 -s 2
 
 #+RESULTS:
 #+begin_example
-item,wn,w,surprisal
+Item Idx    Token: Surprisal (bits)
+   1   1      The:                         nan
+   1   2      key: ██████████             10.4
+   1   3       to: ██                      2.0
+   1   4      the: ████                    3.8
+   1   5 cabinets: █████████████████████  21.0
+   1   6       is: ██                      1.5
+   1   7     that: ███                     3.3
+   1   8      the: ███                     2.5
+   1   9    doors: ████████                7.6
+#+end_example
+
+*** Store results in a ~.csv~ file
+To obtain in ~.csv~ format which can be easily loaded in R, Excel, Google Sheets, and similar:
+#+BEGIN_SRC sh :eval no
+python3 gpt2_generate.py "The key to the cabinets" -n 4 -o output.csv
+#+END_SRC
+
+When no output file is specified (default output in the shell), CSV format can be forced with the ~-c~ option:
+
+#+BEGIN_SRC sh :exports code :eval no
+python3 gpt2_generate.py "The key to the cabinets" -n 4 -c
+#+END_SRC
+
+#+BEGIN_SRC sh :exports results :results output
+python3 gpt2_generate.py "The key to the cabinets" -n 4 -c -s 2
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+item,idx,token,surprisal
 1,1,The,nan
 1,2,key,10.35491943359375
 1,3,to,2.019094467163086
@@ -55,31 +85,6 @@ item,wn,w,surprisal
 1,8,the,2.5106589794158936
 1,9,doors,7.590230464935303
 #+end_example
-
-The output has ~.csv~ format which can be easily loaded in R, Excel, Google Sheets, and similar.  By default it is shown in the shell.
-
-In table format:
-
-#+BEGIN_SRC sh :exports results
-python3 gpt2_generate.py "The key to the cabinets" -n 4 -s 2
-#+END_SRC
-
-#+RESULTS:
-| item | wn | w        |          surprisal |
-|    1 |  1 | The      |                nan |
-|    1 |  2 | key      |  10.35491943359375 |
-|    1 |  3 | to       |  2.019094467163086 |
-|    1 |  4 | the      | 3.7583045959472656 |
-|    1 |  5 | cabinets |  21.04239845275879 |
-|    1 |  6 | is       | 1.5308449268341064 |
-|    1 |  7 | that     | 3.2748565673828125 |
-|    1 |  8 | the      | 2.5106589794158936 |
-|    1 |  9 | doors    |  7.590230464935303 |
-
-*** Store results in a file
-#+BEGIN_SRC sh :eval no
-python3 gpt2_generate.py "The key to the cabinets" -n 4 -o output.csv
-#+END_SRC
 
 *** Reproducible generation
 To obtain reproducible (i.e. non-random) results, the ~-s~ option can be used to set a random seed:
@@ -209,27 +214,27 @@ python3 gpt2_topn.py "The key to the cabinets" -n 5
 #+END_SRC
 
 #+RESULTS:
-: item,s,w,rank,surprisal
+: Item                    Text Token Rank: Surprisal (bits)
+:    1 The key to the cabinets    is    1: ██                 1.5
+:    1 The key to the cabinets   are    2: ████               4.1
+:    1 The key to the cabinets     ,    3: ████               4.2
+:    1 The key to the cabinets   was    4: ████               4.2
+:    1 The key to the cabinets   and    5: ████               4.5
+
+*** Force CSV format in shell output
+#+BEGIN_SRC sh :results output verbatim
+python3 gpt2_topn.py "The key to the cabinets" -n 5 -c
+#+END_SRC
+
+#+RESULTS:
+: item,text,token,rank,surprisal
 : 1,The key to the cabinets,is,1,1.530847191810608
 : 1,The key to the cabinets,are,2,4.100262641906738
 : 1,The key to the cabinets,",",3,4.1611528396606445
 : 1,The key to the cabinets,was,4,4.206236839294434
 : 1,The key to the cabinets,and,5,4.458767890930176
 
-In table format:
-#+BEGIN_SRC sh :exports results :results output table
-python3 gpt2_topn.py "The key to the cabinets" -n 5
-#+END_SRC
-
-#+RESULTS:
-| item | s                       | w   | rank |          surprisal |
-|    1 | The key to the cabinets | is  |    1 |  1.530847191810608 |
-|    1 | The key to the cabinets | are |    2 |  4.100262641906738 |
-|    1 | The key to the cabinets | ,   |    3 | 4.1611528396606445 |
-|    1 | The key to the cabinets | was |    4 |  4.206236839294434 |
-|    1 | The key to the cabinets | and |    5 |  4.458767890930176 |
-
-*** Store results in a file
+*** Store results in a file (CSV format)
 #+BEGIN_SRC sh :eval no
 python3 gpt2_topn.py "The key to the cabinets" -n 5 -o output.csv
 #+END_SRC

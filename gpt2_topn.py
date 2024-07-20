@@ -13,9 +13,10 @@ parser = argparse.ArgumentParser(description='Use GPT2 to generate ranking of th
 
 parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
 parser.add_argument('-n', '--number', type=int, default=10, help='An optional number')
-parser.add_argument('-t', '--tablelayout', action='store_true', help='Output in table layout with ASCII art bars')
+parser.add_argument('-c', '--csv', action='store_true', help='Output in csv format')
 parser.add_argument('-i', '--input', type=argparse.FileType('r', encoding='utf-8'), help='The path to the file from which the input should be read.')
-parser.add_argument('-o', '--output', type=argparse.FileType('w', encoding='utf-8'), default=io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8'), help='The path to the file to which the results should be written (default is stdout).')
+default_output = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+parser.add_argument('-o', '--output', type=argparse.FileType('w', encoding='utf-8'), default=default_output, help='The path to the file to which the results should be written (default is stdout).')
 args = parser.parse_args()
 
 #
@@ -67,7 +68,7 @@ for item in items:
 # Write results to file:
 #
 
-if args.tablelayout:
+if args.output == default_output and not args.csv:
   #
   # Human readable layout with ASCII art bars for surprisal
   #
