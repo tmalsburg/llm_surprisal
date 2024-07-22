@@ -11,10 +11,16 @@ import argparse, sys, io
 
 parser = argparse.ArgumentParser(description='Use GPT2 to generate tokens and calculate per-token surprisal.')
 
+# Task:
 parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
 parser.add_argument('-n', '--number', type=int, default=10, help='An optional number')
-parser.add_argument('-c', '--csv', action='store_true', help='Output in csv format')
+# Reproducibility:
 parser.add_argument('-s', '--seed', type=int, default=None, help='Seed for used for sampling (to force reproducible results)')
+# Sampling parameters:
+parser.add_argument('-t', '--temperature', type=float, default=1.0, help='Temperature when sampling tokens (default is 1).')
+parser.add_argument('-k', '--topk', type=int, default=50, help='Only the top k probabilities are considered for sampling the next token (default k=50)')
+# Input, output options:
+parser.add_argument('-c', '--csv', action='store_true', help='Output in csv format')
 parser.add_argument('-i', '--input', type=argparse.FileType('r', encoding='utf-8'), help='The path to the file from which the input should be read.')
 default_output = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 parser.add_argument('-o', '--output', type=argparse.FileType('w', encoding='utf-8'), default=default_output, help='The path to the file to which the results should be written (default is stdout).')
@@ -64,7 +70,7 @@ for item in items:
 
 def generate(input_text, nt):
   input_tokens = tokenizer(input_text, return_tensors="pt")
-  output_tokens = model.generate(**input_tokens, max_length=nt, temperature=1.0, do_sample=True)
+  output_tokens = model.generate(**input_tokens, max_length=nt, temperature=args.temperature, top_k=args.topk, repetition_penalty=1.0, do_sample=True)
   output_text = tokenizer.batch_decode(output_tokens)[0]
   return output_text
 
