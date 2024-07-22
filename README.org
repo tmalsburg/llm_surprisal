@@ -212,17 +212,19 @@ cat output_generate.csv
 ** Top N next tokens with surprisal
 *** Simple top N
 Top 5 next tokens:
-#+BEGIN_SRC sh :results output verbatim
+#+BEGIN_SRC sh :exports both :results output
 python3 gpt2_topn.py "The key to the cabinets" -n 5
 #+END_SRC
 
 #+RESULTS:
-: Item                    Text Token Rank: Surprisal (bits)
-:    1 The key to the cabinets    is    1: ██                 1.5
-:    1 The key to the cabinets   are    2: ████               4.1
-:    1 The key to the cabinets     ,    3: ████               4.2
-:    1 The key to the cabinets   was    4: ████               4.2
-:    1 The key to the cabinets   and    5: ████               4.5
+#+begin_example
+Item                    Text Token Rank: Surprisal (bits)
+   1 The key to the cabinets    is    1: ██                 1.5
+   1 The key to the cabinets   are    2: ████               4.1
+   1 The key to the cabinets     ,    3: ████               4.2
+   1 The key to the cabinets   was    4: ████               4.2
+   1 The key to the cabinets   and    5: ████               4.5
+#+end_example
 
 *** Force CSV format in shell output
 #+BEGIN_SRC sh :results output verbatim
