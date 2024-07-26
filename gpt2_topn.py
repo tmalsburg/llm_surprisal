@@ -12,7 +12,8 @@ import argparse, sys, io
 parser = argparse.ArgumentParser(description='Use GPT2 to generate ranking of the N most likely next tokens.')
 
 parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
-parser.add_argument('-n', '--number', type=int, default=10, help='An optional number')
+parser.add_argument('-n', '--number', type=int, default=10, help='The number of top-ranking tokens to list (default is n=10)')
+parser.add_argument('-m', '--model', type=str, default="gpt2", help='The model that should be used: gpt2 (English, default), bloom-560m (multilingual), xglm-564M (multilingual)')
 parser.add_argument('-c', '--csv', action='store_true', help='Output in csv format')
 parser.add_argument('-i', '--input', type=argparse.FileType('r', encoding='utf-8'), help='The path to the file from which the input should be read.')
 default_output = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -24,11 +25,18 @@ args = parser.parse_args()
 #
 
 import csv, torch, math
-from transformers import AutoTokenizer, GPT2LMHeadModel
+from transformers import AutoTokenizer, GPT2LMHeadModel, BloomForCausalLM, XGLMForCausalLM
 import torch.nn.functional as F
 
-tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2")
-model     = GPT2LMHeadModel.from_pretrained("openai-community/gpt2")
+models = {
+  "gpt2":       ("openai-community/gpt2", GPT2LMHeadModel),
+  "bloom-560m": ("bigscience/bloom-560m", BloomForCausalLM),
+  "xglm-564M":  ("facebook/xglm-564M", XGLMForCausalLM)
+}
+model, model_class = models[args.model]
+
+tokenizer = AutoTokenizer.from_pretrained(model)
+model     = model_class.from_pretrained(model)
 
 #
 # Read input text:
