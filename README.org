@@ -1,5 +1,5 @@
 
-Simple command-line tools for low-barrier reproducible experiments with GPT2, XGLM (564M), and Bloom (560M).  Primarily intended for use in education.  Designed to be easy to use for non-technical users.
+Simple command-line tools for low-barrier reproducible experiments with [[https://huggingface.co/docs/transformers/en/model_doc/gpt2][GPT2]], [[https://huggingface.co/docs/transformers/en/model_doc/xglm][XGLM (564M)]], and [[https://huggingface.co/docs/transformers/en/model_doc/bloom][Bloom (560M)]].  Primarily intended for use in education.  Designed to be easy to use for non-technical users.
 
 There are currently two tools:
 1. ~llm_generate.py~: Given a text, generate the next N tokens.  Annotate all words with their surprisal.
