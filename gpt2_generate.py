@@ -14,6 +14,7 @@ parser = argparse.ArgumentParser(description='Use GPT2 to generate tokens and ca
 # Task:
 parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
 parser.add_argument('-n', '--number', type=int, default=10, help='An optional number')
+parser.add_argument('-n', '--number', type=int, default=0, help='The number of tokes to generate (default is n=0).')
 # Reproducibility:
 parser.add_argument('-s', '--seed', type=int, default=None, help='Seed for used for sampling (to force reproducible results)')
 # Sampling parameters:
