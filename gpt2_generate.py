@@ -13,13 +13,13 @@ parser = argparse.ArgumentParser(description='Use GPT2 to generate tokens and ca
 
 # Task:
 parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
-parser.add_argument('-n', '--number', type=int, default=10, help='An optional number')
+parser.add_argument('-m', '--model', type=str, default="gpt2", help='The model that should be used: gpt2 (English, default), bloom-560m (multilingual), xglm-564M (multilingual)')
 parser.add_argument('-n', '--number', type=int, default=0, help='The number of tokes to generate (default is n=0).')
 # Reproducibility:
 parser.add_argument('-s', '--seed', type=int, default=None, help='Seed for used for sampling (to force reproducible results)')
 # Sampling parameters:
-parser.add_argument('-t', '--temperature', type=float, default=1.0, help='Temperature when sampling tokens (default is 1).')
-parser.add_argument('-k', '--topk', type=int, default=50, help='Only the top k probabilities are considered for sampling the next token (default k=50)')
+parser.add_argument('-t', '--temperature', type=float, default=1.0, help='Temperature when sampling tokens (default is 1.0).')
+parser.add_argument('-k', '--topk', type=int, default=50, help='Only the top k probabilities are considered for sampling the next token (default is k=50)')
 # Input, output options:
 parser.add_argument('-c', '--csv', action='store_true', help='Output in csv format')
 parser.add_argument('-i', '--input', type=argparse.FileType('r', encoding='utf-8'), help='The path to the file from which the input should be read.')
@@ -33,11 +33,18 @@ args = parser.parse_args()
 
 import csv, torch, random, math
 import numpy as np
-from transformers import AutoTokenizer, GPT2LMHeadModel
+from transformers import AutoTokenizer, GPT2LMHeadModel, BloomForCausalLM, XGLMForCausalLM
 import torch.nn.functional as F
 
-tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2")
-model     = GPT2LMHeadModel.from_pretrained("openai-community/gpt2")
+models = {
+  "gpt2":       ("openai-community/gpt2", GPT2LMHeadModel),
+  "bloom-560m": ("bigscience/bloom-560m", BloomForCausalLM),
+  "xglm-564M":  ("facebook/xglm-564M", XGLMForCausalLM)
+}
+model, model_class = models[args.model]
+
+tokenizer = AutoTokenizer.from_pretrained(model)
+model     = model_class.from_pretrained(model)
 
 def set_seed(seed):
   random.seed(seed)
