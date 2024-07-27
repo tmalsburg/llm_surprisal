@@ -7,11 +7,10 @@ There are currently two tools:
 
 *Key features:*
 - Assumes basic familiarity with the use of a command line, but no programming is needed.
-- Runs open source GPT2 locally without the need for an API key or internet connection.
+- Runs open source pre-trained LLM locally without the need for an API key or internet connection.  GPT2 for English-only, XGLM or Bloom for multilingual experiments.
 - Reasonably fast on CPU.
 - Reproducible results via random seeds.
 - Batch mode that processes multiple items in one go.
-- GPT2 for English-only, XGLM and Bloom for multilingual experiments.
 - Output format is ASCII art bar charts for quick experiments or ~.csv~ for easy processing
   using R, Python, spreadsheet editors, whatnot.
 
