@@ -7,7 +7,10 @@ There are currently two tools:
 
 *Key features:*
 - Assumes basic familiarity with the use of a command line, but no programming is needed.
-- Runs open source pre-trained LLM locally without the need for an API key or internet connection.  GPT2 for English-only, XGLM or Bloom for multilingual experiments.
+- Runs open source pre-trained LLM locally without the need for an API key or internet connection.
+  - [[https://huggingface.co/docs/transformers/en/model_doc/gpt2][GPT2 (1.5B)]] for English
+  - [[https://huggingface.co/bigscience/bloom][Bloom (560M)]] for 46 languages
+  - [[https://huggingface.co/facebook/xglm-564M][XGLM (564M)]] for 30 languages
 - Reasonably fast on CPU.
 - Reproducible results via random seeds.
 - Batch mode that processes multiple items in one go.
