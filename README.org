@@ -27,8 +27,7 @@ It is assumed that the system has a recent version of Python3 and the pip packag
 Then install PyTorch and Huggingface’s ~transformer~ package:
 
 #+BEGIN_SRC sh :eval no
-pip3 install torch
-pip3 install transformers
+pip3 install torch transformers tiktoken sentencepiece protobuf
 #+END_SRC
 
 * Use
