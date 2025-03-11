@@ -1,21 +1,20 @@
 
-Simple command-line tools for low-barrier reproducible experiments with [[https://huggingface.co/docs/transformers/en/model_doc/gpt2][GPT2]], [[https://huggingface.co/docs/transformers/en/model_doc/xglm][XGLM (564M)]], and [[https://huggingface.co/docs/transformers/en/model_doc/bloom][Bloom (560M)]].  Primarily intended for use in education.  Designed to be easy to use for non-technical users.
+Simple command-line tools for low-barrier reproducible experiments with [[https://huggingface.co/docs/transformers/en/model_doc/gpt2][GPT2]], [[https://huggingface.co/docs/transformers/en/model_doc/xglm][XGLM]], and [[https://huggingface.co/docs/transformers/en/model_doc/bloom][Bloom]].  Primarily intended for use in education.  Designed to be easy to use for non-technical users.
 
 There are currently two tools:
 1. ~llm_generate.py~: Given a text, generate the next N tokens.  Annotate all words with their surprisal.
 2. ~llm_topn.py~: Given a text, list the N most highly ranked next tokens with their surprisal.
 
 *Key features:*
-- Assumes basic familiarity with the use of a command line, but no programming is needed.
+- Assumes basic familiarity with the use of a command line, but no programming.
 - Runs open source pre-trained LLM locally without the need for an API key or internet connection.
-  - [[https://huggingface.co/docs/transformers/en/model_doc/gpt2][GPT2 (1.5B)]] for English
-  - [[https://huggingface.co/bigscience/bloom][Bloom (560M)]] for 46 languages
-  - [[https://huggingface.co/facebook/xglm-564M][XGLM (564M)]] for 30 languages
+  - GPT2 for English only ([[https://huggingface.co/openai-community/gpt2][124M]], [[https://huggingface.co/openai-community/gpt2-large][774M]])
+  - [[https://huggingface.co/bigscience/bloom][Bloom]] for 46 languages ([[https://huggingface.co/bigscience/bloom-560m][560M]], [[https://huggingface.co/bigscience/bloom-1b7][1.7B]], [[https://huggingface.co/bigscience/bloom-3b][3B]])
+  - XGLM for 30 languages ([[https://huggingface.co/facebook/xglm-564M][564M]], [[https://huggingface.co/facebook/xglm-1.7B][1.7B]], [[https://huggingface.co/facebook/xglm-2.9B][2.9B]])
 - Reasonably fast on CPU.
 - Reproducible results via random seeds.
 - Batch mode that processes multiple items in one go.
-- Output format is ASCII art bar charts for quick experiments or ~.csv~ for easy processing
-  using R, Python, spreadsheet editors, whatnot.
+- Output format is ASCII art bar charts for quick experiments or ~.csv~ for easy processing in R, Python, spreadsheet editors, etc.
 
 Developed and tested on Ubuntu Linux, but it may also work out of the box on Mac OS and Windows.
 
@@ -24,11 +23,18 @@ Developed and tested on Ubuntu Linux, but it may also work out of the box on Mac
 ** Prerequisites
 It is assumed that the system has a recent version of Python3 and the pip package manager for Python.  On Ubuntu Linux, these can be installed via ~sudo apt install python3-pip~.
 
-Then install PyTorch and Huggingface’s ~transformer~ package:
+Then install PyTorch and Huggingface’s ~transformer~ package along with some supporting packages needed by some models:
 
 #+BEGIN_SRC sh :eval no
 pip3 install torch transformers tiktoken sentencepiece protobuf
 #+END_SRC
+
+* Supported models
+| Model class | Models                          | Languages                                                                                       |
+|-------------+---------------------------------+-------------------------------------------------------------------------------------------------|
+| GPT2        | ~gpt2~, ~gpt2-large~                | English                                                                                         |
+| Bloom       | ~bloom-560m~, ~bloom-1b7~, ~bloom-3b~ | English, Chinese, French, Code, Indic, Indonesian, Niger-Congo, Spanish, Portuguese, Vietnamese |
+| XGLM        | ~xglm-564M~, ~xglm-1.7B~, ~xglm-2.9B~ | English, Russian, Chinese, German, Spanish, …                                                   |
 
 * Use
 
