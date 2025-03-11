@@ -74,8 +74,15 @@ def topn(input_text, n):
   topn_tokens_list = [tokenizer.decode([token_id]) for token_id in topn_tokens[0]]
   return zip(topn_tokens_list, surprisals[0])
 
+sys.stderr.write("Processing item: ")
 for item in items:
+  sys.stderr.write(str(item['item']))
+  sys.stderr.flush()
   item['topn'] = list(topn(item['text'], item['n']))
+  sys.stderr.write("\b" * len(str(item['item'])))
+  sys.stderr.flush()
+sys.stderr.write("\n")
+sys.stderr.flush()
 
 #
 # Write results to file:

@@ -125,8 +125,15 @@ def surprisal(input_text):
   return zip([tokenizer.decode([input_tokens[0][0]])] + decoded_tokens,
              [float('nan')] + surprisals.tolist()[0]) 
 
+sys.stderr.write("Processing item: ")
 for item in items:
+  sys.stderr.write(str(item['item']))
+  sys.stderr.flush()
   item['surprisals'] = list(surprisal(item['text']))
+  sys.stderr.write("\b" * len(str(item['item'])))
+  sys.stderr.flush()
+sys.stderr.write("\n")
+sys.stderr.flush()
 
 #
 # Write results to file:
