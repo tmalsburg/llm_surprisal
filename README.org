@@ -41,6 +41,8 @@ The listed languages have a representation of 5% or more in the training data.  
 
 Additional models can be added in the file ~models.py~.
 
+Note that we do not vouch for the quality of any of these models.  Do your own research to find out if they are suitable for your task.
+
 * Use
 
 ** Generation with surprisal
