@@ -5,6 +5,10 @@ import argparse, sys, io
 # More packages imported below, but after parsing args to avoid
 # unnecessary delays when parameters are mis-specified.
 
+# Load available models:
+with open("models.py", "r") as file:
+  exec(file.read())
+
 #
 # Parameters
 #
@@ -13,32 +17,31 @@ parser = argparse.ArgumentParser(description='Use GPT2 to generate ranking of th
 
 parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
 parser.add_argument('-n', '--number', type=int, default=10, help='The number of top-ranking tokens to list (default is n=10)')
-parser.add_argument('-m', '--model', type=str, default="gpt2", help='The model that should be used: gpt2 (English, default), bloom-560m (multilingual), xglm-564M (multilingual)')
+parser.add_argument('-m', '--model', type=str, default="gpt2", help='The model that should be used.  One of: %s (default gpt2)' % (', '.join(models.keys())))
 parser.add_argument('-c', '--csv', action='store_true', help='Output in csv format')
 parser.add_argument('-i', '--input', type=argparse.FileType('r', encoding='utf-8'), help='The path to the file from which the input should be read.')
 default_output = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 parser.add_argument('-o', '--output', type=argparse.FileType('w', encoding='utf-8'), default=default_output, help='The path to the file to which the results should be written (default is stdout).')
 args = parser.parse_args()
 
+# Check arguments:
+
+try:
+  model, model_class = models[args.model]
+except KeyError:
+  print(f"ERROR: Model {args.model} is not supported. Choose one from: \n  {"\n  ".join(models.keys())}", file=sys.stderr)
+  sys.exit(1)
+
 #
 # Load model:
 #
 
 import csv, torch, math
-from transformers import AutoTokenizer, GPT2LMHeadModel, BloomForCausalLM, XGLMForCausalLM
+from transformers import AutoTokenizer 
 import torch.nn.functional as F
 
-models = {
-  "gpt2":       ("openai-community/gpt2", GPT2LMHeadModel),
-  "gpt2-large": ("openai-community/gpt2-large", GPT2LMHeadModel),
-  "bloom-560m": ("bigscience/bloom-560m", BloomForCausalLM),
-  "bloom-1b7":  ("bigscience/bloom-1b7", BloomForCausalLM),
-  "bloom-3b":   ("bigscience/bloom-3b", BloomForCausalLM),
-  "xglm-564M":  ("facebook/xglm-564M", XGLMForCausalLM),
-  "xglm-1.7B":  ("facebook/xglm-1.7B", XGLMForCausalLM),
-  "xglm-2.9B":  ("facebook/xglm-2.9B", XGLMForCausalLM)
-}
-model, model_class = models[args.model]
+exec(f"from transformers import {model_class}") 
+model_class = eval(model_class)
 
 tokenizer = AutoTokenizer.from_pretrained(model)
 model     = model_class.from_pretrained(model)
