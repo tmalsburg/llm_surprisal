@@ -8,7 +8,8 @@ There are currently two tools:
 *Key features:*
 - Assumes basic familiarity with the use of a command line, but no programming.
 - Runs open source pre-trained LLM locally without the need for an API key or internet connection.
-  - GPT2 for English only ([[https://huggingface.co/openai-community/gpt2][124M]], [[https://huggingface.co/openai-community/gpt2-large][774M]])
+  - GPT2 for English ([[https://huggingface.co/openai-community/gpt2][124M]], [[https://huggingface.co/openai-community/gpt2-large][774M]])
+  - GPT2 for German ([[https://huggingface.co/dbmdz/german-gpt2][137M]])
   - [[https://huggingface.co/bigscience/bloom][Bloom]] for 46 languages ([[https://huggingface.co/bigscience/bloom-560m][560M]], [[https://huggingface.co/bigscience/bloom-1b7][1.7B]], [[https://huggingface.co/bigscience/bloom-3b][3B]])
   - XGLM for 30 languages ([[https://huggingface.co/facebook/xglm-564M][564M]], [[https://huggingface.co/facebook/xglm-1.7B][1.7B]], [[https://huggingface.co/facebook/xglm-2.9B][2.9B]])
 - Reasonably fast on CPU.
@@ -34,6 +35,7 @@ The listed languages have a representation of 5% or more in the training data.  
 | Model class | Models                          | Languages                                                                                       |
 |-------------+---------------------------------+-------------------------------------------------------------------------------------------------|
 | GPT2        | ~gpt2~, ~gpt2-large~                | English                                                                                         |
+| GPT2        | ~german-gpt2~                     | German                                                                                          |
 | Bloom       | ~bloom-560m~, ~bloom-1b7~, ~bloom-3b~ | English, Chinese, French, Code, Indic, Indonesian, Niger-Congo, Spanish, Portuguese, Vietnamese |
 | XGLM        | ~xglm-564M~, ~xglm-1.7B~, ~xglm-2.9B~ | English, Russian, Chinese, German, Spanish, …                                                   |
 
