@@ -107,26 +107,30 @@ def surprisal(input_text):
     outputs = model(input_tokens, labels=input_tokens)
     logits = outputs.logits
 
-  shifted_logits = logits[..., :-1, :].contiguous()
-  shifted_tokens = input_tokens[..., 1:].contiguous()
+  # Compute log probabilities for all tokens:
+  log_probs = F.log_softmax(logits, dim=-1)
 
-  # Calculate the log probabilities:
-  log_probs = F.log_softmax(shifted_logits, dim=-1)
+  # Shift input_tokens to get surprisal for all tokens, including
+  # the first one:
+  shifted_tokens = input_tokens[..., 1:]
 
-  # Gather the log probabilities of the target tokens:
-  target_log_probs = log_probs.gather(2, shifted_tokens.unsqueeze(-1)).squeeze(-1)
+  # Gather the log probabilities of target tokens:
+  target_log_probs = log_probs[:, :-1].gather(2, shifted_tokens.unsqueeze(-1)).squeeze(-1)
 
-  # Calculate surprisal values: negative log probability
-  surprisals = -target_log_probs
+  # Compute surprisal (-log probability):
+  surprisals = -target_log_probs / torch.log(torch.tensor(2.0))
 
-  # Convert from log base e to log base 2 (optional, depending on the
-  # definition of surprisal you're using):
-  surprisals = surprisals / torch.log(torch.tensor(2.0))
+  # Handle the first token separately:
+  first_token = input_tokens[0, 0].item()
+  first_token_surprisal = (-log_probs[0, 0, first_token].item() / torch.log(torch.tensor(2.0))).item()
 
-  decoded_tokens = [tokenizer.decode([token]) for token in shifted_tokens.squeeze().tolist()]
+  # Convert token IDs to readable tokens:
+  decoded_tokens = [tokenizer.decode([tok]) for tok in input_tokens.squeeze().tolist()]
 
-  return zip([tokenizer.decode([input_tokens[0][0]])] + decoded_tokens,
-             [float('nan')] + surprisals.tolist()[0]) 
+  # Include the first token's surprisal:
+  surprisals = [first_token_surprisal] + surprisals.squeeze(0).tolist()
+
+  return list(zip(decoded_tokens, surprisals))
 
 sys.stderr.write("Processing item: ")
 for item in items:
