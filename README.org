@@ -51,7 +51,7 @@ Note that we do not vouch for the quality of any of these models.  Do your own r
 
 * Use
 
-** Generation with surprisal
+** Text generation with surprisal
 
 *** Display help text
 #+BEGIN_SRC sh :exports both :results verbatim
@@ -93,7 +93,6 @@ options:
                         written (default is stdout).
 #+end_example
 
-
 *** Simple generation of tokens
 Command to generate four additional tokens using GPT2 (default model) and calculate surprisal for each token.
 #+BEGIN_SRC sh :exports code :eval no
@@ -117,6 +116,8 @@ Item Idx    Token: Surprisal (bits)
    1   8      the: ███                     2.5
    1   9    doors: ████████                7.6
 #+end_example
+
+NOTE: Take surprisal for the first word/token with a grain of salt.  It’s not clear that models are doing the right thing here and predictions of different models can diverge quite a bit for the first token.
 
 *** Multilingual models
 Generation with XGLM 564M
