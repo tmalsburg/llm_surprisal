@@ -126,7 +126,12 @@ def surprisal(input_text):
   first_token_surprisal = (-log_probs[0, 0, first_token].item() / torch.log(torch.tensor(2.0))).item()
 
   # Convert token IDs to readable tokens:
-  decoded_tokens = [tokenizer.decode([tok]) for tok in input_tokens.squeeze().tolist()]
+  # Note: tolist does not return a list when there's just one token,
+  # but a plain int.
+  it = input_tokens.squeeze().tolist()
+  if type(it) == int:
+    it = [it]
+  decoded_tokens = [tokenizer.decode([tok]) for tok in it]
 
   # Include the first token's surprisal:
   surprisals = [first_token_surprisal] + surprisals.squeeze(0).tolist()
