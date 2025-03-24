@@ -13,7 +13,7 @@ with open("models.py", "r") as file:
 # Parameters
 #
 
-parser = argparse.ArgumentParser(description='Use GPT2 to generate tokens and calculate per-token surprisal.')
+parser = argparse.ArgumentParser(description='Use transformer models to generate tokens and calculate per-token surprisal.')
 
 # Task:
 parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')

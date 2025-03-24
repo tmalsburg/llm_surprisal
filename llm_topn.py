@@ -13,7 +13,7 @@ with open("models.py", "r") as file:
 # Parameters
 #
 
-parser = argparse.ArgumentParser(description='Use GPT2 to generate ranking of the N most likely next tokens.')
+parser = argparse.ArgumentParser(description='Use transformer models to generate ranking of the N most likely next tokens.')
 
 parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
 parser.add_argument('-n', '--number', type=int, default=10, help='The number of top-ranking tokens to list (default is n=10)')

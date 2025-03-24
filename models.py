@@ -2,6 +2,8 @@
 models = {
   "gpt2":               ("openai-community/gpt2",        "GPT2LMHeadModel"),
   "gpt2-large":         ("openai-community/gpt2-large",  "GPT2LMHeadModel"),
+  "gemma-3-1b-pt":      ("google/gemma-3-1b-pt",         "Gemma3ForCausalLM"),
+  "gemma-3-4b-pt":      ("google/gemma-3-4b-pt",         "Gemma3ForCausalLM"),
   "bloom-560m":         ("bigscience/bloom-560m",        "BloomForCausalLM"),
   "bloom-1b7":          ("bigscience/bloom-1b7",         "BloomForCausalLM"),
   "bloom-3b":           ("bigscience/bloom-3b",          "BloomForCausalLM"),
