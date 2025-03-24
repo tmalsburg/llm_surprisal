@@ -36,7 +36,8 @@ args = parser.parse_args()
 try:
   model, model_class = models[args.model]
 except KeyError:
-  print(f"ERROR: Model {args.model} is not supported. Choose one from: \n  {"\n  ".join(models.keys())}", file=sys.stderr)
+  models_list = "\n ".join(models.keys())
+  print(f"ERROR: Model {args.model} is not supported. Choose one from: \n {models_list}", file=sys.stderr)
   sys.exit(1)
 
 #
