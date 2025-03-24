@@ -1,4 +1,8 @@
 
+#+BEGIN_SRC emacs-lisp :exports none :session python
+(pyvenv-activate "~/usr/src/llm_surprisal/venv")
+#+END_SRC
+
 Simple command-line tools for low-barrier reproducible experiments with transformer models available on Hugging Face (preconfigured: [[https://huggingface.co/docs/transformers/en/model_doc/gpt2][GPT2]], [[https://huggingface.co/docs/transformers/en/model_doc/xglm][XGLM]], [[https://huggingface.co/docs/transformers/en/model_doc/bloom][Bloom]], [[https://huggingface.co/blog/gemma3][Gemma 3]]).  Primarily intended for use in education.  Designed to be easy to use for non-technical users.
 
 There are currently two tools:
@@ -60,7 +64,7 @@ usage: llm_generate.py [-h] [-m MODEL] [-n NUMBER] [-s SEED] [-t TEMPERATURE]
                        [-k TOPK] [-c] [-i INPUT] [-o OUTPUT]
                        [text]
 
-Use a transformer model to generate tokens and calculate per-token surprisal.
+Use transformer models to generate tokens and calculate per-token surprisal.
 
 positional arguments:
   text                  The string of text to be processed.
@@ -69,8 +73,9 @@ options:
   -h, --help            show this help message and exit
   -m MODEL, --model MODEL
                         The model that should be used. One of: gpt2,
-                        gpt2-large, bloom-560m, bloom-1b7, bloom-3b,
-                        xglm-564M, xglm-1.7B, xglm-2.9B (default gpt2)
+                        gpt2-large, gemma-3-1b-pt, gemma-3-4b-pt, bloom-560m,
+                        bloom-1b7, bloom-3b, xglm-564M, xglm-1.7B, xglm-2.9B,
+                        german-gpt2, german-gpt2-larger (default gpt2)
   -n NUMBER, --number NUMBER
                         The number of tokes to generate (default is n=0).
   -s SEED, --seed SEED  Seed for used for sampling (to force reproducible
@@ -102,7 +107,7 @@ python3 llm_generate.py "The key to the cabinets" -n 4 -s 2
 #+RESULTS:
 #+begin_example
 Item Idx    Token: Surprisal (bits)
-   1   1      The:                         nan
+   1   1      The: ███████████            11.1
    1   2      key: ██████████             10.4
    1   3       to: ██                      2.0
    1   4      the: ████                    3.8
@@ -126,7 +131,7 @@ python3 llm_generate.py "Der Polizist sagte, dass man nicht mehr ermitteln kann,
 #+RESULTS:
 #+begin_example
 Item Idx       Token: Surprisal (bits)
-   1   1        </s>:                    nan
+   1   1        </s>: █████              4.8
    1   2        </s>: █████              4.8
    1   3         Der: ████████████      11.6
    1   4      Polizi: █████████████     13.0
@@ -159,30 +164,19 @@ python3 llm_generate.py "Der Polizist sagte, dass man nicht mehr ermitteln kann,
 Two sampling parameters are currently supported: 1. Temperature (default 1) and 2. Top-k (default 50).  To use different sampling parameters:
 
 #+BEGIN_SRC sh :exports code :eval no
-python3 llm_generate.py "This is a" -t 1000 -k 1
+python3 llm_generate.py "This is a" -t 1000 -k 1 -n 1
 #+END_SRC
 
 #+BEGIN_SRC sh :exports results :results output
-python3 llm_generate.py "This is a" -t 1000 -k 1 -s 2
+python3 llm_generate.py "This is a" -t 1000 -k 1 -s 2 -n 1
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-Item Idx   Token: Surprisal (bits)
-   1   1    This:                    nan
-   1   2      is: ████               4.4
-   1   3       a: ███                2.7
-   1   4    very: ████               4.2
-   1   5    good: ████               3.8
-   1   6 example: ████               4.2
-   1   7      of:                    0.4
-   1   8     how: ██                 2.2
-   1   9      to: ███                2.7
-   1  10     use: ███                2.9
-   1  11     the: ███                3.2
-   1  12       ": ██████             6.4
-   1  13       I: ████████           7.8
-#+end_example
+: Item Idx Token: Surprisal (bits)
+:    1   1  This: █████████████     13.3
+:    1   2    is: ████               4.4
+:    1   3     a: ███                2.7
+:    1   4  very: ████               4.2
 
 The repetition penalty is fixed at 1.0 assuming that larger values are not desirable when studying the behaviour of the model.  Nucleus sampling is currently not supported but could be added if needed.
 
@@ -200,7 +194,7 @@ python3 llm_generate.py "The key to the cabinets" -n 4 -c -s 2
 #+RESULTS:
 #+begin_example
 item,idx,token,surprisal
-1,1,The,nan
+1,1,The,11.121516227722168
 1,2,key,10.35491943359375
 1,3,to,2.019094467163086
 1,4,the,3.7583045959472656
@@ -261,83 +255,84 @@ Result:
 cat output_generate.csv
 #+END_SRC
 
-| item | wn | w         |             surprisal |
-|------+----+-----------+-----------------------|
-|    1 |  1 | John      |                   nan |
-|    1 |  2 | saw       |    12.686095237731934 |
-|    1 |  3 | the       |    2.5510218143463135 |
-|    1 |  4 | man       |      6.69647216796875 |
-|    1 |  5 | who       |    4.4374775886535645 |
-|    1 |  6 | the       |     9.218789100646973 |
-|    1 |  7 | card      |     12.91416072845459 |
-|    1 |  8 | catalog   |    13.132523536682129 |
-|    1 |  9 | had       |     5.045916557312012 |
-|    1 | 10 | confused  |    12.417732238769531 |
-|    1 | 11 | a         |     8.445308685302734 |
-|    1 | 12 | great     |     8.923978805541992 |
-|    1 | 13 | deal      |    0.5196788311004639 |
-|    1 | 14 | .         |     2.855055093765259 |
-|    2 |  1 | No        |                   nan |
-|    2 |  2 | head      |    12.043790817260742 |
-|    2 |  3 | injury    |     7.169843673706055 |
-|    2 |  4 | is        |     3.976238965988159 |
-|    2 |  5 | too       |      6.11444616317749 |
-|    2 |  6 | trivial   |     10.36826229095459 |
-|    2 |  7 | to        |    1.1925396919250488 |
-|    2 |  8 | be        |    3.6252267360687256 |
-|    2 |  9 | ignored   |     5.360403060913086 |
-|    2 | 10 | .         |    1.3230934143066406 |
-|    3 |  1 | The       |                   nan |
-|    3 |  2 | key       |     10.35491943359375 |
-|    3 |  3 | to        |     2.019094467163086 |
-|    3 |  4 | the       |    3.7583045959472656 |
-|    3 |  5 | cabinets  |     21.04239845275879 |
-|    3 |  6 | were      |     6.044715404510498 |
-|    3 |  7 | on        |     9.186738967895508 |
-|    3 |  8 | the       |    1.0266693830490112 |
-|    3 |  9 | table     |     6.743055820465088 |
-|    3 | 10 | .         |    2.8487112522125244 |
-|    4 |  1 | How       |                   nan |
-|    4 |  2 | many      |     8.747537612915039 |
-|    4 |  3 | animals   |    10.349991798400879 |
-|    4 |  4 | of        |     7.982310771942139 |
-|    4 |  5 | each      |     7.254271984100342 |
-|    4 |  6 | kind      |    3.8629841804504395 |
-|    4 |  7 | did       |     6.853036880493164 |
-|    4 |  8 | Moses     |    11.290939331054688 |
-|    4 |  9 | take      |     6.513387680053711 |
-|    4 | 10 | on        |     5.387193202972412 |
-|    4 | 11 | the       |     2.429086208343506 |
-|    4 | 12 | ar        |      8.29068660736084 |
-|    4 | 13 | k         |  0.001733059762045741 |
-|    4 | 14 | ?         |    1.3717999458312988 |
-|    5 |  1 | The       |                   nan |
-|    5 |  2 | horse     |    13.856287002563477 |
-|    5 |  3 | raced     |    10.928426742553711 |
-|    5 |  4 | past      |     5.529265880584717 |
-|    5 |  5 | the       |     1.912912130355835 |
-|    5 |  6 | barn      |     6.164068222045898 |
-|    5 |  7 | fell      |    18.577974319458008 |
-|    5 |  8 | .         |    6.4461774826049805 |
-|    6 |  1 | The       |                   nan |
-|    6 |  2 | first     |     7.707244873046875 |
-|    6 |  3 | thing     |     3.870574712753296 |
-|    6 |  4 | the       |     5.894345760345459 |
-|    6 |  5 | new       |     7.025041580200195 |
-|    6 |  6 | president |    6.4177327156066895 |
-|    6 |  7 | will      |     4.513916492462158 |
-|    6 |  8 | do        |     0.641898512840271 |
-|    6 |  9 | is        |    0.6119055151939392 |
-|    6 | 10 | introduce |     6.937398910522461 |
-|    6 | 11 | some      |     5.374466896057129 |
-|    6 | 12 | sort      |    5.1832194328308105 |
-|    6 | 13 | of        | 0.0006344764260575175 |
-|    6 | 14 | """"      |     5.472208499908447 |
-|    6 | 15 | Make      |     6.435114860534668 |
-|    6 | 16 | America   |   0.20164340734481812 |
-|    6 | 17 | Great     |   0.06291275471448898 |
-|    6 | 18 | Again     |   0.01570785976946354 |
-|    6 | 19 | """"      |   0.08896449953317642 |
+#+RESULTS:
+| item | idx | token     |            surprisal |
+|------+-----+-----------+----------------------|
+|    1 |   1 | John      |    13.80270004272461 |
+|    1 |   2 | saw       |   12.686095237731934 |
+|    1 |   3 | the       |   2.5510218143463135 |
+|    1 |   4 | man       |     6.69647216796875 |
+|    1 |   5 | who       |   4.4374775886535645 |
+|    1 |   6 | the       |    9.218789100646973 |
+|    1 |   7 | card      |    12.91416072845459 |
+|    1 |   8 | catalog   |   13.132523536682129 |
+|    1 |   9 | had       |    5.045916557312012 |
+|    1 |  10 | confused  |   12.417732238769531 |
+|    1 |  11 | a         |    8.445308685302734 |
+|    1 |  12 | great     |    8.923978805541992 |
+|    1 |  13 | deal      |   0.5196788311004639 |
+|    1 |  14 | .         |    2.855055093765259 |
+|    2 |   1 | No        |   12.265271186828613 |
+|    2 |   2 | head      |   12.043790817260742 |
+|    2 |   3 | injury    |    7.169843673706055 |
+|    2 |   4 | is        |    3.976238965988159 |
+|    2 |   5 | too       |     6.11444616317749 |
+|    2 |   6 | trivial   |    10.36826229095459 |
+|    2 |   7 | to        |   1.1925396919250488 |
+|    2 |   8 | be        |   3.6252267360687256 |
+|    2 |   9 | ignored   |    5.360403060913086 |
+|    2 |  10 | .         |   1.3230934143066406 |
+|    3 |   1 | The       |   11.121516227722168 |
+|    3 |   2 | key       |    10.35491943359375 |
+|    3 |   3 | to        |    2.019094467163086 |
+|    3 |   4 | the       |   3.7583045959472656 |
+|    3 |   5 | cabinets  |    21.04239845275879 |
+|    3 |   6 | were      |    6.044715404510498 |
+|    3 |   7 | on        |    9.186738967895508 |
+|    3 |   8 | the       |   1.0266693830490112 |
+|    3 |   9 | table     |    6.743055820465088 |
+|    3 |  10 | .         |   2.8487112522125244 |
+|    4 |   1 | How       |   12.976412773132324 |
+|    4 |   2 | many      |    8.747537612915039 |
+|    4 |   3 | animals   |   10.349991798400879 |
+|    4 |   4 | of        |    7.982310771942139 |
+|    4 |   5 | each      |    7.254271984100342 |
+|    4 |   6 | kind      |   3.8629841804504395 |
+|    4 |   7 | did       |    6.853036880493164 |
+|    4 |   8 | Moses     |   11.290939331054688 |
+|    4 |   9 | take      |    6.513387680053711 |
+|    4 |  10 | on        |    5.387193202972412 |
+|    4 |  11 | the       |    2.429086208343506 |
+|    4 |  12 | ar        |     8.29068660736084 |
+|    4 |  13 | k         | 0.001733059762045741 |
+|    4 |  14 | ?         |   1.3717999458312988 |
+|    5 |   1 | The       |   11.121516227722168 |
+|    5 |   2 | horse     |   13.856287002563477 |
+|    5 |   3 | raced     |   10.928426742553711 |
+|    5 |   4 | past      |    5.529265880584717 |
+|    5 |   5 | the       |    1.912912130355835 |
+|    5 |   6 | barn      |    6.164068222045898 |
+|    5 |   7 | fell      |   18.577974319458008 |
+|    5 |   8 | .         |   6.4461774826049805 |
+|    6 |   1 | The       |   11.121516227722168 |
+|    6 |   2 | first     |    7.707244873046875 |
+|    6 |   3 | thing     |    3.870574712753296 |
+|    6 |   4 | the       |    5.894345760345459 |
+|    6 |   5 | new       |    7.025041580200195 |
+|    6 |   6 | president |   6.4177327156066895 |
+|    6 |   7 | will      |    4.513916492462158 |
+|    6 |   8 | do        |    0.641898512840271 |
+|    6 |   9 | is        |   0.6119055151939392 |
+|    6 |  10 | ask       |    6.328762054443359 |
+|    6 |  11 | the       |   2.3450233936309814 |
+|    6 |  12 | families  |    6.168287754058838 |
+|    6 |  13 | of        |  0.47885921597480774 |
+|    6 |  14 | the       |   1.5992308855056763 |
+|    6 |  15 | victims   |   1.7704647779464722 |
+|    6 |  16 | to        |   1.5023294687271118 |
+|    6 |  17 | come      |   2.8077030181884766 |
+|    6 |  18 | forward   |    0.288813978433609 |
+|    6 |  19 | and       |   1.7452363967895508 |
 
 ** Top N next tokens with surprisal
 
@@ -351,7 +346,7 @@ python3 llm_topn.py -h
 usage: llm_topn.py [-h] [-n NUMBER] [-m MODEL] [-c] [-i INPUT] [-o OUTPUT]
                    [text]
 
-Use a transformer model to generate ranking of the N most likely next tokens.
+Use transformer models to generate ranking of the N most likely next tokens.
 
 positional arguments:
   text                  The string of text to be processed.
@@ -363,8 +358,9 @@ options:
                         n=10)
   -m MODEL, --model MODEL
                         The model that should be used. One of: gpt2,
-                        gpt2-large, bloom-560m, bloom-1b7, bloom-3b,
-                        xglm-564M, xglm-1.7B, xglm-2.9B (default gpt2)
+                        gpt2-large, gemma-3-1b-pt, gemma-3-4b-pt, bloom-560m,
+                        bloom-1b7, bloom-3b, xglm-564M, xglm-1.7B, xglm-2.9B,
+                        german-gpt2, german-gpt2-larger (default gpt2)
   -c, --csv             Output in csv format
   -i INPUT, --input INPUT
                         The path to the file from which the input should be
@@ -381,14 +377,12 @@ python3 llm_topn.py "The key to the cabinets" -n 5
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-Item                    Text Token Rank: Surprisal (bits)
-   1 The key to the cabinets    is    1: ██                 1.5
-   1 The key to the cabinets   are    2: ████               4.1
-   1 The key to the cabinets     ,    3: ████               4.2
-   1 The key to the cabinets   was    4: ████               4.2
-   1 The key to the cabinets   and    5: ████               4.5
-#+end_example
+: Item                    Text Token Rank: Surprisal (bits)
+:    1 The key to the cabinets    is    1: ██                 1.5
+:    1 The key to the cabinets   are    2: ████               4.1
+:    1 The key to the cabinets     ,    3: ████               4.2
+:    1 The key to the cabinets   was    4: ████               4.2
+:    1 The key to the cabinets   and    5: ████               4.5
 
 *** Multilingual top N
 #+BEGIN_SRC sh :exports both :results output
@@ -458,7 +452,8 @@ cat output_topn.csv
 #+END_SRC
 
 #+RESULTS:
-| item | s                                                               | w           | rank |          surprisal |
+| item | text                                                            | token       | rank |          surprisal |
+|------+-----------------------------------------------------------------+-------------+------+--------------------|
 |    1 | The key to the cabinets                                         | is          |    1 |  1.530847191810608 |
 |    1 | The key to the cabinets                                         | are         |    2 |  4.100262641906738 |
 |    1 | The key to the cabinets                                         | ,           |    3 | 4.1611528396606445 |
