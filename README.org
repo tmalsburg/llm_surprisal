@@ -241,6 +241,8 @@ Columns:
 2. Text
 3. Number of additional tokens that should be generated
 
+Note: Additional columns can be included but will be ignored.
+
 Then run:
 #+BEGIN_SRC sh :exports code :eval no
 python3 llm_generate.py -i input_generate.csv -o output_generate.csv
