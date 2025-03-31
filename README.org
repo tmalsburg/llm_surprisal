@@ -35,6 +35,12 @@ Then install PyTorch and Hugging Face’s ~transformer~ package along with some 
 pip3 install torch transformers tiktoken sentencepiece protobuf
 #+END_SRC
 
+** Using uv
+If you have [[https://docs.astral.sh/uv/][uv]] installed, you can simply run the tools as below and everthing that’s needed will be automatically installed in a new virtual environment.
+#+BEGIN_SRC sh :eval no
+uv run --script llm_generate.py "This is a" -n 1
+#+END_SRC
+
 * Supported models
 The listed languages have a representation of 5% or more in the training data.  They are sorted in descending order, starting with the most represented languages.  For more details, refer to the model descriptions on Hugging Face.
 | Model class | Models                          | Languages                                                                                       |
