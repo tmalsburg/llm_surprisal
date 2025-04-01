@@ -67,12 +67,16 @@ model_class = eval(model_class)
 tokenizer = AutoTokenizer.from_pretrained(model)
 model     = model_class.from_pretrained(model)
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}", file=sys.stderr)
+model.to(device)
+
 def set_seed(seed):
   random.seed(seed)
   np.random.seed(seed)
   torch.manual_seed(seed)
-  # if torch.cuda.is_available():
-  #   torch.cuda.manual_seed_all(seed)
+  if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(seed)
 
 #
 # Read input text:
@@ -98,7 +102,7 @@ for item in items:
 #
 
 def generate(input_text, nt):
-  input_tokens = tokenizer(input_text, return_tensors="pt")
+  input_tokens = tokenizer(input_text, return_tensors="pt").to(device)
   output_tokens = model.generate(**input_tokens, max_length=nt, temperature=args.temperature, top_k=args.topk, repetition_penalty=1.0, do_sample=True)
   output_text = tokenizer.batch_decode(output_tokens)[0]
   return output_text
@@ -115,7 +119,7 @@ for item in items:
 #
 
 def surprisal(input_text):
-  input_tokens = tokenizer.encode(input_text, return_tensors='pt')
+  input_tokens = tokenizer.encode(input_text, return_tensors='pt').to(device)
   with torch.no_grad():
     outputs = model(input_tokens, labels=input_tokens)
     logits = outputs.logits
