@@ -10,13 +10,15 @@
 # ]
 # ///
 
-import argparse, sys, io
+import argparse, sys, io, os
 
 # More packages imported below, but after parsing args to avoid
 # unnecessary delays when parameters are mis-specified.
 
 # Load available models:
-with open("models.py", "r") as file:
+script_dir = os.path.dirname(os.path.abspath(__file__))
+models_path = os.path.join(script_dir, "models.py")
+with open(models_path, "r") as file:
   exec(file.read())
 
 #
