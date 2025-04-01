@@ -1,5 +1,6 @@
 
 models = {
+  "openai-gpt":         ("openai-community/openai-gpt",  "OpenAIGPTLMHeadModel"),
   "gpt2":               ("openai-community/gpt2",        "GPT2LMHeadModel"),
   "gpt2-large":         ("openai-community/gpt2-large",  "GPT2LMHeadModel"),
   "gemma-3-1b-pt":      ("google/gemma-3-1b-pt",         "Gemma3ForCausalLM"),

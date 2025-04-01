@@ -64,7 +64,13 @@ import torch.nn.functional as F
 exec(f"from transformers import {model_class}") 
 model_class = eval(model_class)
 
-tokenizer = AutoTokenizer.from_pretrained(model)
+# Special case for GPT1 (with AutoTokenizer, surprisal calculations
+# wouldn't work):
+if model=="openai-community/openai-gpt":
+  from transformers import OpenAIGPTTokenizer
+  tokenizer = OpenAIGPTTokenizer.from_pretrained(model)
+else:
+  tokenizer = AutoTokenizer.from_pretrained(model)
 model     = model_class.from_pretrained(model)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
