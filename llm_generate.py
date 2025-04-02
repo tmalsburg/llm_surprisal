@@ -79,12 +79,12 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}", file=sys.stderr)
 model.to(device)
 
-def set_seed(seed):
-  random.seed(seed)
-  np.random.seed(seed)
-  torch.manual_seed(seed)
+if args.seed:
+  random.seed(args.seed)
+  np.random.seed(args.seed)
+  torch.manual_seed(args.seed)
   if torch.cuda.is_available():
-    torch.cuda.manual_seed_all(seed)
+    torch.cuda.manual_seed_all(args.seed)
 
 #
 # Read input text:
@@ -115,8 +115,6 @@ def generate(input_text, nt):
   output_text = tokenizer.batch_decode(output_tokens)[0]
   return output_text
 
-if args.seed:
-  set_seed(args.seed)
 
 for item in items:
   if item['n'] > 0:
