@@ -66,6 +66,10 @@ else:
   tokenizer = AutoTokenizer.from_pretrained(model)
 model     = model_class.from_pretrained(model)
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}", file=sys.stderr)
+model.to(device)
+
 #
 # Read input text:
 #
@@ -84,7 +88,7 @@ else:
 #
 
 def topn(input_text, n):
-  input_ids = tokenizer.encode(input_text, return_tensors="pt")
+  input_ids = tokenizer.encode(input_text, return_tensors="pt").to(device)
   # Get logits for the last token:
   with torch.no_grad():
     outputs = model(input_ids)
