@@ -7,6 +7,8 @@
 #     "tiktoken>=0.9.0",
 #     "sentencepiece>=0.2.0",
 #     "protobuf>=6.30.1",
+#     "spacy>=3.8.4",
+#     "ftfy>=6.3.1",
 # ]
 # ///
 
