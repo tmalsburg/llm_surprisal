@@ -1,4 +1,16 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12.3"
+# dependencies = [
+#     "torch>=2.6.0",
+#     "transformers>=4.50.0",
+#     "tiktoken>=0.9.0",
+#     "sentencepiece>=0.2.0",
+#     "protobuf>=6.30.1",
+#     "spacy>=3.8.4",
+#     "ftfy>=6.3.1",
+# ]
+# ///
 
 import argparse, sys, io
 
