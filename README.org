@@ -33,7 +33,7 @@ It is assumed that the system has a recent version of Python3 and the pip packag
 Then install PyTorch and Hugging Face’s ~transformer~ package along with some supporting packages needed by some models:
 
 #+BEGIN_SRC sh :eval no
-pip3 install torch transformers tiktoken sentencepiece protobuf
+pip3 install torch transformers tiktoken sentencepiece protobuf spacey ftfy
 #+END_SRC
 
 ** Using uv
