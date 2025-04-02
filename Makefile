@@ -1,5 +1,5 @@
 
-BINARIES=llm_generate.py llm_topn.py
+BINARIES=llm_generate.py llm_topn.py models.py
 INSTALL_DIR=$(HOME)/usr/bin
 
 .PHONY: all install test
