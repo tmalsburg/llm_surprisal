@@ -82,15 +82,17 @@ usage: llm_generate.py [-h] [-m MODEL] [-n NUMBER] [-s SEED] [-t TEMPERATURE]
 Use transformer models to generate tokens and calculate per-token surprisal.
 
 positional arguments:
-  text                  The string of text to be processed.
+  text                  The string of text to be processed. If none, input is
+                        interactively prompted in a REPL.
 
 options:
   -h, --help            show this help message and exit
   -m MODEL, --model MODEL
-                        The model that should be used. One of: openai-gpt, gpt2,
-                        gpt2-large, gemma-3-1b-pt, gemma-3-4b-pt, bloom-560m,
-                        bloom-1b7, bloom-3b, xglm-564M, xglm-1.7B, xglm-2.9B,
-                        german-gpt2, german-gpt2-larger (default gpt2)
+                        The model that should be used. One of: openai-gpt,
+                        gpt2, gpt2-large, gemma-3-1b-pt, gemma-3-4b-pt,
+                        bloom-560m, bloom-1b7, bloom-3b, xglm-564M, xglm-1.7B,
+                        xglm-2.9B, german-gpt2, german-gpt2-larger (default
+                        gpt2)
   -n NUMBER, --number NUMBER
                         The number of tokes to generate (default is n=0).
   -s SEED, --seed SEED  Seed for used for sampling (to force reproducible
@@ -133,6 +135,29 @@ Item Idx    Token: Surprisal (bits)
 #+end_example
 
 NOTE: Take surprisal for the first word/token with a grain of salt.  It’s not clear that models are doing the right thing here and predictions of different models can diverge quite a bit for the first token.
+
+*** Interactive mode
+
+When no input text is provided, ~llm_generate.py~ interactively prompts the user for text.  Useful for quick experiments since the model has to be loaded only once.
+
+#+BEGIN_SRC sh :exports code :eval no
+llm_generate.py
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Welcome to llm_generate interactive mode.
+Enter text: The key to the cabinets was
+Item Idx    Token: Surprisal (bits)
+   1   1      The: ███████████            11.1
+   1   2      key: ██████████             10.4
+   1   3       to: ██                      2.0
+   1   4      the: ████                    3.8
+   1   5 cabinets: █████████████████████  21.0
+   1   6      was: ████                    4.2
+#+end_example
+
+To exit the prompt, type “exit” or hit ~CTRL-D~.
 
 *** Multilingual models
 Generation with XGLM 564M
@@ -375,10 +400,11 @@ options:
                         The number of top-ranking tokens to list (default is
                         n=10)
   -m MODEL, --model MODEL
-                        The model that should be used. One of: openai-gpt, gpt2,
-                        gpt2-large, gemma-3-1b-pt, gemma-3-4b-pt, bloom-560m,
-                        bloom-1b7, bloom-3b, xglm-564M, xglm-1.7B, xglm-2.9B,
-                        german-gpt2, german-gpt2-larger (default gpt2)
+                        The model that should be used. One of: openai-gpt,
+                        gpt2, gpt2-large, gemma-3-1b-pt, gemma-3-4b-pt,
+                        bloom-560m, bloom-1b7, bloom-3b, xglm-564M, xglm-1.7B,
+                        xglm-2.9B, german-gpt2, german-gpt2-larger (default
+                        gpt2)
   -c, --csv             Output in csv format
   -i INPUT, --input INPUT
                         The path to the file from which the input should be

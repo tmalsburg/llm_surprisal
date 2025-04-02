@@ -12,7 +12,7 @@
 # ]
 # ///
 
-import argparse, sys, io, os
+import argparse, sys, io, os, cmd
 
 # More packages imported below, but after parsing args to avoid
 # unnecessary delays when parameters are mis-specified.
@@ -30,7 +30,7 @@ with open(models_path, "r") as file:
 parser = argparse.ArgumentParser(description='Use transformer models to generate tokens and calculate per-token surprisal.')
 
 # Task:
-parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
+parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.  If none, input is interactively prompted in a REPL.')
 parser.add_argument('-m', '--model', type=str, default="gpt2", help='The model that should be used.  One of: %s (default gpt2)' % (', '.join(models.keys())))
 parser.add_argument('-n', '--number', type=int, default=0, help='The number of tokes to generate (default is n=0).')
 # Reproducibility:
@@ -99,12 +99,6 @@ if args.input:
 else:
   items.append({'item': 1, 'text': args.text, 'n': args.number})
 
-# Add input tokens to n for generate:
-
-for item in items:
-  tokens = tokenizer(item['text'], return_tensors="pt")
-  item['nt'] = item['n'] + len(tokens['input_ids'][0])
-
 #
 # Generate:
 #
@@ -114,11 +108,6 @@ def generate(input_text, nt):
   output_tokens = model.generate(**input_tokens, max_length=nt, temperature=args.temperature, top_k=args.topk, repetition_penalty=1.0, do_sample=True)
   output_text = tokenizer.batch_decode(output_tokens)[0]
   return output_text
-
-
-for item in items:
-  if item['n'] > 0:
-    item['text'] = generate(item['text'], item['nt'])
 
 #
 # Surprisal:
@@ -160,27 +149,25 @@ def surprisal(input_text):
 
   return list(zip(decoded_tokens, surprisals))
 
-sys.stderr.write("Processing item: ")
-for item in items:
-  sys.stderr.write(str(item['item']))
-  sys.stderr.flush()
+def process_item(item):
+  # Add input tokens to n for generate:
+  tokens = tokenizer(item['text'], return_tensors="pt")
+  item['nt'] = item['n'] + len(tokens['input_ids'][0])
+
+  # Generate tokens:
+  if item['n'] > 0:
+    item['text'] = generate(item['text'], item['nt'])
+
+  # Calculate surprisal:
   item['surprisals'] = list(surprisal(item['text']))
-  sys.stderr.write("\b" * len(str(item['item'])))
-  sys.stderr.flush()
-sys.stderr.write("\n")
-sys.stderr.flush()
 
-#
-# Write results to file:
-#
+  return item
 
-if args.output == default_output and not args.csv:
-  #
-  # Human readable layout with ASCII art bars for surprisal
-  #
-  item_max = len("item")
-  idx_max = len("idx")
-  token_max = len("token")
+# Human readable layout with ASCII art bars for surprisal:
+def pretty_print(items):
+  item_max      = len("item")
+  idx_max       = len("idx")
+  token_max     = len("token")
   surprisal_max = len("surprisal (bits)")
   for item in items:
     for idx,(token, surprisal) in enumerate(item['surprisals']):
@@ -196,6 +183,7 @@ if args.output == default_output and not args.csv:
       "Idx".rjust(idx_max),
       "Token".rjust(token_max),
       "Surprisal (bits)"))
+
   for item in items:
     for idx,(token, surprisal) in enumerate(item['surprisals']):
       if math.isnan(surprisal):
@@ -209,10 +197,10 @@ if args.output == default_output and not args.csv:
           token.strip().rjust(token_max),
           sp.ljust(round(surprisal_max)),
           ("%.1f" % (surprisal,)).rjust(5)))
-else:
-  #
-  # CSV output:
-  #
+  args.output.flush()
+
+# CSV output:
+def write_csv(items):
   class UnixDialect(csv.excel):
     lineterminator = '\n'
   csv.register_dialect("unix_excel", UnixDialect)
@@ -222,3 +210,39 @@ else:
     for idx,(token, surprisal) in enumerate(item['surprisals']):
       csvwriter.writerow([item['item'], idx+1, token.strip(), surprisal])
 
+if args.text:
+  # Process items:
+  # FIXME: I'm sure there's a nice package for displaying progress.
+  sys.stderr.write("Processing item: ")
+  for item in items:
+    sys.stderr.write("\n" + str(item['item']))
+    sys.stderr.flush()
+    process_item(item)
+    # item['surprisals'] = list(surprisal(item['text']))
+    sys.stderr.write("\b" * (len(str(item['item'])) + 1))
+    sys.stderr.flush()
+  sys.stderr.write("\n")
+  sys.stderr.flush()
+
+  # Write results to file:
+  if args.output == default_output and not args.csv:
+    pretty_print(items)
+  else:
+    write_csv(items)
+
+else:
+  class Repl(cmd.Cmd):
+    intro = "Welcome to llm_generate interactive mode."
+    prompt = "Enter text: "
+
+    def default(self, line):
+      item = process_item({'item': 1, 'text': line.strip(), 'n': args.number})
+      pretty_print([item])
+
+    def do_exit(self, arg):
+      return True
+
+    def do_EOF(self, arg):
+      return True
+
+  Repl().cmdloop()
