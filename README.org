@@ -18,7 +18,7 @@ There are currently two tools:
   - [[https://huggingface.co/bigscience/bloom][Bloom]] (46 languages, [[https://huggingface.co/bigscience/bloom-560m][560M]], [[https://huggingface.co/bigscience/bloom-1b7][1.7B]], [[https://huggingface.co/bigscience/bloom-3b][3B]])
   - XGLM (30 languages, [[https://huggingface.co/facebook/xglm-564M][564M]], [[https://huggingface.co/facebook/xglm-1.7B][1.7B]], [[https://huggingface.co/facebook/xglm-2.9B][2.9B]])
   - Gemma 3 pretrained (140 languages, [[https://huggingface.co/google/gemma-3-1b-pt][1B]], [[https://huggingface.co/google/gemma-3-4b-pt][4B]])
-- Reasonably fast on CPU, no GPU required.
+- Reasonably fast on CPU.  GPU will be used if available.
 - Reproducible results via random seeds.
 - Batch mode for processing many items in one go.
 - Output format is ASCII art bar charts for quick experiments or ~.csv~ for easy processing in R, Python, spreadsheet editors, etc.
