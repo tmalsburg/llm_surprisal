@@ -27,19 +27,25 @@ Developed and tested on Ubuntu Linux, but it may also work out of the box on Mac
 
 * Install
 
-** Prerequisites
-It is assumed that the system has a recent version of Python3 and the pip package manager for Python.  On Ubuntu Linux, these can be installed via ~sudo apt install python3-pip~.
+** Using uv
+The by far easiest way to use these tools is via [[https://docs.astral.sh/uv/][uv]], a package and project manager for Python.   With uv installed, you can simply run the tools as below and everything that’s needed will be automatically installed in a new virtual environment.
 
-Then install PyTorch and Hugging Face’s ~transformer~ package along with some supporting packages needed by some models:
+#+BEGIN_SRC sh :eval no
+./llm_generate.py "This is a" -n 1
+#+END_SRC
+
+If ~llm_generate.py~, ~llm_topn.py~, and ~models.py~ are in your ~PATH~, you can run the tools from anywhere in your filesystem.
+
+** Old-fashioned way
+It is assumed that the system has a recent version of Python3 and the pip package manager for Python.  On Ubuntu Linux, these can be installed via ~sudo apt install python3-pip~.  Then create a virtual environment and activate it.  Then install PyTorch and Hugging Face’s ~transformer~ package along with some supporting packages needed by some models:
 
 #+BEGIN_SRC sh :eval no
 pip3 install torch transformers tiktoken sentencepiece protobuf spacey ftfy
 #+END_SRC
 
-** Using uv
-If you have [[https://docs.astral.sh/uv/][uv]] installed, you can simply run the tools as below and everthing that’s needed will be automatically installed in a new virtual environment.
+Once, everything is installed, run the tools like this:
 #+BEGIN_SRC sh :eval no
-uv run --script llm_generate.py "This is a" -n 1
+python3 llm_generate.py "This is a" -n 1
 #+END_SRC
 
 * Supported models
