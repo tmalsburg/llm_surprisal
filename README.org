@@ -23,7 +23,7 @@ There are currently two tools:
 - Batch mode for processing many items in one go.
 - Output format is ASCII art bar charts for quick experiments or ~.csv~ for easy processing in R, Python, spreadsheet editors, etc.
 
-Developed and tested on Ubuntu Linux, but it may also work out of the box on Mac OS and Windows.
+Developed and tested on Ubuntu Linux, but it should also work out of the box on Mac OS and Windows.
 
 * Install
 
@@ -34,7 +34,7 @@ The by far easiest way to use these tools is via [[https://docs.astral.sh/uv/][u
 ./llm_generate.py "This is a" -n 1
 #+END_SRC
 
-If ~llm_generate.py~, ~llm_topn.py~, and ~models.py~ are in your ~PATH~, you can run the tools from anywhere in your filesystem.
+If ~llm_generate.py~, ~llm_topn.py~, and ~models.py~ are in your search path for executables, you can run the tools from anywhere in your filesystem.
 
 ** Old-fashioned way
 It is assumed that the system has a recent version of Python3 and the pip package manager for Python.  On Ubuntu Linux, these can be installed via ~sudo apt install python3-pip~.  Then create a virtual environment and activate it.  Then install PyTorch and Hugging Face’s ~transformer~ package along with some supporting packages needed by some models:
@@ -292,90 +292,23 @@ llm_generate.py -i input_generate.csv -o output_generate.csv
 llm_generate.py -i input_generate.csv -o output_generate.csv -s 1
 #+END_SRC
 
-Result:
+Result (abbreviated):
 
 #+BEGIN_SRC sh :exports results
-cat output_generate.csv
+head output_generate.csv
 #+END_SRC
 
 #+RESULTS:
-| item | idx | token     |            surprisal |
-|------+-----+-----------+----------------------|
-|    1 |   1 | John      |    13.80270004272461 |
-|    1 |   2 | saw       |   12.686095237731934 |
-|    1 |   3 | the       |   2.5510218143463135 |
-|    1 |   4 | man       |     6.69647216796875 |
-|    1 |   5 | who       |   4.4374775886535645 |
-|    1 |   6 | the       |    9.218789100646973 |
-|    1 |   7 | card      |    12.91416072845459 |
-|    1 |   8 | catalog   |   13.132523536682129 |
-|    1 |   9 | had       |    5.045916557312012 |
-|    1 |  10 | confused  |   12.417732238769531 |
-|    1 |  11 | a         |    8.445308685302734 |
-|    1 |  12 | great     |    8.923978805541992 |
-|    1 |  13 | deal      |   0.5196788311004639 |
-|    1 |  14 | .         |    2.855055093765259 |
-|    2 |   1 | No        |   12.265271186828613 |
-|    2 |   2 | head      |   12.043790817260742 |
-|    2 |   3 | injury    |    7.169843673706055 |
-|    2 |   4 | is        |    3.976238965988159 |
-|    2 |   5 | too       |     6.11444616317749 |
-|    2 |   6 | trivial   |    10.36826229095459 |
-|    2 |   7 | to        |   1.1925396919250488 |
-|    2 |   8 | be        |   3.6252267360687256 |
-|    2 |   9 | ignored   |    5.360403060913086 |
-|    2 |  10 | .         |   1.3230934143066406 |
-|    3 |   1 | The       |   11.121516227722168 |
-|    3 |   2 | key       |    10.35491943359375 |
-|    3 |   3 | to        |    2.019094467163086 |
-|    3 |   4 | the       |   3.7583045959472656 |
-|    3 |   5 | cabinets  |    21.04239845275879 |
-|    3 |   6 | were      |    6.044715404510498 |
-|    3 |   7 | on        |    9.186738967895508 |
-|    3 |   8 | the       |   1.0266693830490112 |
-|    3 |   9 | table     |    6.743055820465088 |
-|    3 |  10 | .         |   2.8487112522125244 |
-|    4 |   1 | How       |   12.976412773132324 |
-|    4 |   2 | many      |    8.747537612915039 |
-|    4 |   3 | animals   |   10.349991798400879 |
-|    4 |   4 | of        |    7.982310771942139 |
-|    4 |   5 | each      |    7.254271984100342 |
-|    4 |   6 | kind      |   3.8629841804504395 |
-|    4 |   7 | did       |    6.853036880493164 |
-|    4 |   8 | Moses     |   11.290939331054688 |
-|    4 |   9 | take      |    6.513387680053711 |
-|    4 |  10 | on        |    5.387193202972412 |
-|    4 |  11 | the       |    2.429086208343506 |
-|    4 |  12 | ar        |     8.29068660736084 |
-|    4 |  13 | k         | 0.001733059762045741 |
-|    4 |  14 | ?         |   1.3717999458312988 |
-|    5 |   1 | The       |   11.121516227722168 |
-|    5 |   2 | horse     |   13.856287002563477 |
-|    5 |   3 | raced     |   10.928426742553711 |
-|    5 |   4 | past      |    5.529265880584717 |
-|    5 |   5 | the       |    1.912912130355835 |
-|    5 |   6 | barn      |    6.164068222045898 |
-|    5 |   7 | fell      |   18.577974319458008 |
-|    5 |   8 | .         |   6.4461774826049805 |
-|    6 |   1 | The       |   11.121516227722168 |
-|    6 |   2 | first     |    7.707244873046875 |
-|    6 |   3 | thing     |    3.870574712753296 |
-|    6 |   4 | the       |    5.894345760345459 |
-|    6 |   5 | new       |    7.025041580200195 |
-|    6 |   6 | president |   6.4177327156066895 |
-|    6 |   7 | will      |    4.513916492462158 |
-|    6 |   8 | do        |    0.641898512840271 |
-|    6 |   9 | is        |   0.6119055151939392 |
-|    6 |  10 | ask       |    6.328762054443359 |
-|    6 |  11 | the       |   2.3450233936309814 |
-|    6 |  12 | families  |    6.168287754058838 |
-|    6 |  13 | of        |  0.47885921597480774 |
-|    6 |  14 | the       |   1.5992308855056763 |
-|    6 |  15 | victims   |   1.7704647779464722 |
-|    6 |  16 | to        |   1.5023294687271118 |
-|    6 |  17 | come      |   2.8077030181884766 |
-|    6 |  18 | forward   |    0.288813978433609 |
-|    6 |  19 | and       |   1.7452363967895508 |
+| item | idx | token   |          surprisal |
+|    1 |   1 | John    |  13.80270004272461 |
+|    1 |   2 | saw     | 12.686095237731934 |
+|    1 |   3 | the     | 2.5510218143463135 |
+|    1 |   4 | man     |   6.69647216796875 |
+|    1 |   5 | who     | 4.4374775886535645 |
+|    1 |   6 | the     |  9.218789100646973 |
+|    1 |   7 | card    |  12.91416072845459 |
+|    1 |   8 | catalog | 13.132523536682129 |
+|    1 |   9 | had     |  5.045916557312012 |
 
 ** Top N next tokens with surprisal
 
@@ -490,52 +423,20 @@ Then run:
 llm_topn.py -i input_topn.csv -o output_topn.csv
 #+END_SRC
 
-Result:
+Result (abbreviated):
 #+BEGIN_SRC sh :exports results
-cat output_topn.csv
+head output_topn.csv
 #+END_SRC
 
 #+RESULTS:
-| item | text                                                            | token       | rank |          surprisal |
-|------+-----------------------------------------------------------------+-------------+------+--------------------|
-|    1 | The key to the cabinets                                         | is          |    1 |  1.530847191810608 |
-|    1 | The key to the cabinets                                         | are         |    2 |  4.100262641906738 |
-|    1 | The key to the cabinets                                         | ,           |    3 | 4.1611528396606445 |
-|    1 | The key to the cabinets                                         | was         |    4 |  4.206236839294434 |
-|    1 | The key to the cabinets                                         | and         |    5 |  4.458767890930176 |
-|    1 | The key to the cabinets                                         | in          |    6 |  4.966185569763184 |
-|    1 | The key to the cabinets                                         | of          |    7 |  5.340408802032471 |
-|    1 | The key to the cabinets                                         | '           |    8 |  5.369940280914307 |
-|    1 | The key to the cabinets                                         | being       |    9 |  5.823633193969727 |
-|    1 | The key to the cabinets                                         | that        |   10 |  6.032191753387451 |
-|    2 | The key to the cabinet                                          | 's          |    1 | 1.8515361547470093 |
-|    2 | The key to the cabinet                                          | is          |    2 | 2.9451916217803955 |
-|    2 | The key to the cabinet                                          | ,           |    3 |  4.270960807800293 |
-|    2 | The key to the cabinet                                          | was         |    4 |  4.756969928741455 |
-|    2 | The key to the cabinet                                          | meeting     |    5 |  5.037260055541992 |
-|    2 | The key to the cabinet                                          | being       |    6 | 5.4005866050720215 |
-|    2 | The key to the cabinet                                          | resh        |    7 |  6.193490028381348 |
-|    2 | The key to the cabinet                                          | has         |    8 |  6.257472991943359 |
-|    2 | The key to the cabinet                                          | and         |    9 |  6.363502502441406 |
-|    2 | The key to the cabinet                                          | of          |   10 |  6.371416091918945 |
-|    3 | The first thing the new president will do is to introduce       | a           |    1 |  1.717236042022705 |
-|    3 | The first thing the new president will do is to introduce       | legislation |    2 | 3.0158398151397705 |
-|    3 | The first thing the new president will do is to introduce       | the         |    3 |  3.788292407989502 |
-|    3 | The first thing the new president will do is to introduce       | his         |    4 |  4.383864402770996 |
-|    3 | The first thing the new president will do is to introduce       | an          |    5 |  4.400935649871826 |
-|    3 | The first thing the new president will do is to introduce       | new         |    6 |  4.592444896697998 |
-|    3 | The first thing the new president will do is to introduce       | some        |    7 |  5.393261909484863 |
-|    3 | The first thing the new president will do is to introduce       | himself     |    8 |  6.188421726226807 |
-|    3 | The first thing the new president will do is to introduce       | more        |    9 |  7.121828079223633 |
-|    3 | The first thing the new president will do is to introduce       | and         |   10 |  7.167385578155518 |
-|    4 | After moving into the Oval Office, one of the first things that | came        |    1 |   4.16267204284668 |
-|    4 | After moving into the Oval Office, one of the first things that | I           |    2 | 4.3133015632629395 |
-|    4 | After moving into the Oval Office, one of the first things that | Trump       |    3 |   4.36268949508667 |
-|    4 | After moving into the Oval Office, one of the first things that | President   |    4 |  4.635979652404785 |
-|    4 | After moving into the Oval Office, one of the first things that | he          |    5 |  4.925130367279053 |
-|    4 | After moving into the Oval Office, one of the first things that | the         |    6 |  5.133755207061768 |
-|    4 | After moving into the Oval Office, one of the first things that | was         |    7 |  5.245244026184082 |
-|    4 | After moving into the Oval Office, one of the first things that | happened    |    8 |  5.386913299560547 |
-|    4 | After moving into the Oval Office, one of the first things that | Obama       |    9 |  6.018731117248535 |
-|    4 | After moving into the Oval Office, one of the first things that | Mr          |   10 | 6.0303544998168945 |
+| item | text                    | token | rank |          surprisal |
+|    1 | The key to the cabinets | is    |    1 |  1.530847191810608 |
+|    1 | The key to the cabinets | are   |    2 |  4.100262641906738 |
+|    1 | The key to the cabinets | ,     |    3 | 4.1611528396606445 |
+|    1 | The key to the cabinets | was   |    4 |  4.206236839294434 |
+|    1 | The key to the cabinets | and   |    5 |  4.458767890930176 |
+|    1 | The key to the cabinets | in    |    6 |  4.966185569763184 |
+|    1 | The key to the cabinets | of    |    7 |  5.340408802032471 |
+|    1 | The key to the cabinets | '     |    8 |  5.369940280914307 |
+|    1 | The key to the cabinets | being |    9 |  5.823633193969727 |
 
