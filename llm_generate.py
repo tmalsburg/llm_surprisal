@@ -210,7 +210,7 @@ def write_csv(items):
     for idx,(token, surprisal) in enumerate(item['surprisals']):
       csvwriter.writerow([item['item'], idx+1, token.strip(), surprisal])
 
-if args.text:
+if args.text or args.input:
   # Process items:
   # FIXME: I'm sure there's a nice package for displaying progress.
   sys.stderr.write("Processing item: ")
