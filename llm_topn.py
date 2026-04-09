@@ -150,7 +150,7 @@ if args.output == default_output and not args.csv:
         "%s %s %s %s: %s %s\n" % (
           str(item['item']).rjust(item_max),
           item['text'].rjust(text_max),
-          token.strip().rjust(token_max),
+          token.replace(" ", "␣").rjust(token_max),
           str(rank+1).rjust(rank_max),
           sp.ljust(round(surprisal_max)),
           ("%.1f" % (surprisal,)).rjust(5)))

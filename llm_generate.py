@@ -194,7 +194,7 @@ def pretty_print(items):
         "%s %s %s: %s %s\n" % (
           str(item['item']).rjust(item_max),
           str(idx+1).rjust(idx_max),
-          token.strip().rjust(token_max),
+          token.replace(" ", "␣").rjust(token_max),
           sp.ljust(round(surprisal_max)),
           ("%.1f" % (surprisal,)).rjust(5)))
   args.output.flush()
