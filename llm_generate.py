@@ -173,7 +173,7 @@ def pretty_print(items):
     for idx,(token, surprisal) in enumerate(item['surprisals']):
       item_max      = max(item_max,      len(str(item['item'])))
       idx_max       = max(idx_max,       len(str(idx+1)))
-      token_max     = max(token_max,     len(token.strip()))
+      token_max     = max(token_max,     len(token))
       if not math.isnan(surprisal):
         surprisal_max = max(surprisal_max, surprisal)
 

@@ -128,7 +128,7 @@ if args.output == default_output and not args.csv:
     for rank,(token, surprisal) in enumerate(item['topn']):
       item_max      = max(item_max,      len(str(item['item'])))
       text_max      = max(text_max,      len(str(item['text'])))
-      token_max     = max(token_max,     len(token.strip()))
+      token_max     = max(token_max,     len(token))
       rank_max      = max(rank_max,      len(str(rank)))
       if not math.isnan(surprisal):
         surprisal_max = max(surprisal_max, surprisal)
