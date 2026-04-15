@@ -440,3 +440,28 @@ head output_topn.csv
 |    1 | The key to the cabinets | '     |    8 |  5.369940280914307 |
 |    1 | The key to the cabinets | being |    9 |  5.823633193969727 |
 
+* License
+
+This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+For the full license text, consult the file file:LICENSE in this repository or visit the [[https://www.gnu.org/licenses/gpl-3.0.html][GNU website]].
+
+* Citation
+If you use this software in academic research, please cite it using the following format.
+
+APA:
+- von der Malsburg, T. (2026). llm_surprisal: Command-line tools for low-barrier reproducible experiments with transformer models. GitHub repository. https://github.com/tmalsburg/llm_surprisal
+
+BibTeX:
+#+BEGIN_SRC bibtex
+@Misc{Malsburg2026llmsurprisal,
+  author    = {von der Malsburg, Titus},
+  title     = {llm\_surprisal: Command-line tools for low-barrier reproducible experiments with transformer models},
+  howpublished= {\url{https://github.com/tmalsburg/llm_surprisal}},
+  year      = {2026},
+  publisher = {GitHub},
+  journal   = {GitHub repository},
+}
+#+END_SRC
