@@ -448,7 +448,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 For the full license text, consult the file file:LICENSE in this repository or visit the [[https://www.gnu.org/licenses/gpl-3.0.html][GNU website]].
 
-* Citation
+* How to cite
 If you use this software in academic research, please cite it using the following format.
 
 APA:
