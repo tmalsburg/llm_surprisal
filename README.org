@@ -11,7 +11,7 @@ There are currently two tools:
 
 *Key features:*
 - Assumes basic familiarity with the use of a command line, but no programming.
-- Runs open source pre-trained LLM locally without the need for an API key or internet connection.  Preconfigured models:
+- Runs open source pre-trained LLM locally without the need for an API key or internet connection.  Some of the preconfigured models (check file:models.py for full list):
   - GPT (English, [[https://huggingface.co/openai-community/openai-gpt][120M]])
   - GPT2 (English, [[https://huggingface.co/openai-community/gpt2][124M]], [[https://huggingface.co/openai-community/gpt2-large][774M]])
   - GPT2 (German, [[https://huggingface.co/dbmdz/german-gpt2][137M]])
