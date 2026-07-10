@@ -12,7 +12,7 @@
 # ]
 # ///
 
-import argparse, sys, io, os
+import argparse, sys, io, os, cmd
 
 # More packages imported below, but after parsing args to avoid
 # unnecessary delays when parameters are mis-specified.
@@ -29,7 +29,7 @@ with open(models_path, "r") as file:
 
 parser = argparse.ArgumentParser(description='Use transformer models to generate ranking of the N most likely next tokens.')
 
-parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.')
+parser.add_argument('text', type=str, nargs='?', help='The string of text to be processed.  If none, input is interactively prompted in a REPL.')
 parser.add_argument('-n', '--number', type=int, default=10, help='The number of top-ranking tokens to list (default is n=10)')
 parser.add_argument('-m', '--model', type=str, default="gpt2", help='The model that should be used.  One of: %s (default gpt2)' % (', '.join(models.keys())))
 parser.add_argument('-c', '--csv', action='store_true', help='Output in csv format')
@@ -101,24 +101,16 @@ def topn(input_text, n):
   topn_tokens_list = [tokenizer.decode([token_id]) for token_id in topn_tokens[0]]
   return zip(topn_tokens_list, surprisals[0])
 
-sys.stderr.write("Processing item: ")
-for item in items:
-  sys.stderr.write(str(item['item']))
-  sys.stderr.flush()
+def process_item(item):
   item['topn'] = list(topn(item['text'], item['n']))
-  sys.stderr.write("\b" * len(str(item['item'])))
-  sys.stderr.flush()
-sys.stderr.write("\n")
-sys.stderr.flush()
+  return item
 
 #
 # Write results to file:
 #
 
-if args.output == default_output and not args.csv:
-  #
-  # Human readable layout with ASCII art bars for surprisal
-  #
+# Human readable layout with ASCII art bars for surprisal:
+def pretty_print(items):
   item_max      = len("item")
   text_max      = len("text")
   token_max     = len("token")
@@ -154,7 +146,10 @@ if args.output == default_output and not args.csv:
           str(rank+1).rjust(rank_max),
           sp.ljust(round(surprisal_max)),
           ("%.1f" % (surprisal,)).rjust(5)))
-else:
+  args.output.flush()
+
+# CSV output:
+def write_csv(items):
   class UnixDialect(csv.excel):
     lineterminator = '\n'
   csv.register_dialect("unix_excel", UnixDialect)
@@ -164,3 +159,38 @@ else:
   for item in items:
     for rank,(token, surprisal) in enumerate(item['topn']):
       csvwriter.writerow([item['item'], item['text'], token.strip(), rank+1, surprisal])
+
+if args.text or args.input:
+  # Process items:
+  sys.stderr.write("Processing item: ")
+  for item in items:
+    sys.stderr.write(str(item['item']))
+    sys.stderr.flush()
+    process_item(item)
+    sys.stderr.write("\b" * len(str(item['item'])))
+    sys.stderr.flush()
+  sys.stderr.write("\n")
+  sys.stderr.flush()
+
+  # Write results to file:
+  if args.output == default_output and not args.csv:
+    pretty_print(items)
+  else:
+    write_csv(items)
+
+else:
+  class Repl(cmd.Cmd):
+    intro = "Welcome to llm_topn interactive mode."
+    prompt = "Enter text: "
+
+    def default(self, line):
+      item = process_item({'item': 1, 'text': line.strip(), 'n': args.number})
+      pretty_print([item])
+
+    def do_exit(self, arg):
+      return True
+
+    def do_EOF(self, arg):
+      return True
+
+  Repl().cmdloop()
